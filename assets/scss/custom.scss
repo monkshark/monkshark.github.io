@@ -129,6 +129,18 @@ body.anim-ready .article-content h3.is-visible {
     transform: translateX(0);
 }
 
+/* --- 코드 블록 가로 스크롤바 숨기기 (스크롤 기능은 유지) --- */
+.article-content .highlight pre,
+.article-content pre {
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE / 구 Edge */
+}
+
+.article-content .highlight pre::-webkit-scrollbar,
+.article-content pre::-webkit-scrollbar {
+    display: none;                  /* Chrome / Safari / 신 Edge */
+}
+
 /* --- 코드 블록 등장 --- */
 body.anim-ready .article-content .highlight {
     opacity: 0;
