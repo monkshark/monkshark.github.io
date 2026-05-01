@@ -3,6 +3,11 @@
    JS가 .anim-ready 클래스를 body에 추가한 후에만 숨김 처리
    =========================== */
 
+.section-card .section-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
 /* --- 카드 목록: 순차 등장 (stagger) --- */
 body.anim-ready .article-list article {
     opacity: 0;
