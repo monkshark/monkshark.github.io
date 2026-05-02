@@ -1,6 +1,11 @@
 <script>
 (function() {
-    // JS가 동작할 때만 애니메이션 활성화
+    // hx-boost: 사이드바·헤더 유지하고 main 영역만 부드럽게 교체
+    document.body.setAttribute('hx-boost', 'true');
+    document.body.setAttribute('hx-target', 'main');
+    document.body.setAttribute('hx-select', 'main');
+    document.body.setAttribute('hx-swap', 'innerHTML show:window:top');
+
     document.body.classList.add('anim-ready');
 
     var observer = new IntersectionObserver(
@@ -16,40 +21,34 @@
     );
 
     function initAnimations() {
-        // 카드 목록 순차 등장
-        var articles = document.querySelectorAll('.article-list article');
+        var articles = document.querySelectorAll('.article-list article:not(.is-visible)');
         for (var i = 0; i < articles.length; i++) {
             articles[i].style.transitionDelay = (i * 0.1) + 's';
             observer.observe(articles[i]);
         }
 
-        // 사이드바 위젯 순차 등장
-        var widgets = document.querySelectorAll('.sidebar .widget');
+        var widgets = document.querySelectorAll('.sidebar .widget:not(.is-visible)');
         for (var j = 0; j < widgets.length; j++) {
             widgets[j].style.transitionDelay = (0.3 + j * 0.12) + 's';
             observer.observe(widgets[j]);
         }
 
-        // TOC 위젯
-        var tocs = document.querySelectorAll('.widget--toc');
+        var tocs = document.querySelectorAll('.widget--toc:not(.is-visible)');
         for (var k = 0; k < tocs.length; k++) observer.observe(tocs[k]);
 
-        // 글 본문 헤딩
-        var headings = document.querySelectorAll('.article-content h2, .article-content h3');
+        var headings = document.querySelectorAll('.article-content h2:not(.is-visible), .article-content h3:not(.is-visible)');
         for (var m = 0; m < headings.length; m++) {
             headings[m].style.transitionDelay = (m * 0.05) + 's';
             observer.observe(headings[m]);
         }
 
-        // 코드 블록
-        var highlights = document.querySelectorAll('.article-content .highlight');
+        var highlights = document.querySelectorAll('.article-content .highlight:not(.is-visible)');
         for (var n = 0; n < highlights.length; n++) {
             highlights[n].style.transitionDelay = (n * 0.08) + 's';
             observer.observe(highlights[n]);
         }
 
-        // 범용
-        var scrollEls = document.querySelectorAll('.animate-on-scroll');
+        var scrollEls = document.querySelectorAll('.animate-on-scroll:not(.is-visible)');
         for (var p = 0; p < scrollEls.length; p++) observer.observe(scrollEls[p]);
     }
 
@@ -58,5 +57,8 @@
     } else {
         initAnimations();
     }
+
+    // hx-boost로 main 교체된 뒤 새 DOM에 다시 애니메이션 부착
+    document.body.addEventListener('htmx:afterSettle', initAnimations);
 })();
 </script>
