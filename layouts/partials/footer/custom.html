@@ -1,11 +1,5 @@
 <script>
 (function() {
-    // hx-boost: 사이드바·헤더 유지하고 main 영역만 부드럽게 교체
-    document.body.setAttribute('hx-boost', 'true');
-    document.body.setAttribute('hx-target', 'main');
-    document.body.setAttribute('hx-select', 'main');
-    document.body.setAttribute('hx-swap', 'innerHTML show:window:top');
-
     document.body.classList.add('anim-ready');
 
     var observer = new IntersectionObserver(
@@ -58,7 +52,29 @@
         initAnimations();
     }
 
-    // hx-boost로 main 교체된 뒤 새 DOM에 다시 애니메이션 부착
-    document.body.addEventListener('htmx:afterSettle', initAnimations);
+    // swup: 풀 리로드 없이 .main-container 영역만 교체. body class도 동기화
+    function initSwup() {
+        if (typeof Swup === 'undefined') return;
+        var plugins = [];
+        if (typeof SwupBodyClassPlugin !== 'undefined') {
+            plugins.push(new SwupBodyClassPlugin());
+        }
+        var swup = new Swup({
+            containers: ['.main-container'],
+            animationSelector: false,
+            plugins: plugins
+        });
+        swup.hooks.on('content:replace', function() {
+            // body-class plugin이 className을 통째로 교체하므로 anim-ready 재부착
+            document.body.classList.add('anim-ready');
+            initAnimations();
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSwup);
+    } else {
+        initSwup();
+    }
 })();
 </script>
