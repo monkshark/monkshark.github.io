@@ -3,11 +3,6 @@
    JS가 .anim-ready 클래스를 body에 추가한 후에만 숨김 처리
    =========================== */
 
-.section-card .section-description {
-    font-size: 1.25rem;
-    line-height: 1.6;
-}
-
 /* --- 페이지 레벨 가로 스크롤바 숨김 (clip은 sticky를 깨지 않음) --- */
 html, body {
     overflow-x: clip;
