@@ -52,21 +52,40 @@
         initAnimations();
     }
 
-    // swup: 풀 리로드 없이 .main-container 영역만 교체. body class도 동기화
+    // swup: 풀 리로드 없이 .main-container 영역만 교체.
+    // body class와 main-container class도 응답 HTML에서 직접 동기화 (테마 CSS가 page-type별 class에 의존)
+    function syncContainerClass(visit) {
+        var newDoc = visit && visit.to && visit.to.document;
+        var newHtml = visit && visit.to && visit.to.html;
+        var bodyClass = '';
+        var containerClass = '';
+
+        if (newDoc) {
+            if (newDoc.body) bodyClass = newDoc.body.className || '';
+            var newContainer = newDoc.querySelector('.main-container');
+            if (newContainer) containerClass = newContainer.className || '';
+        } else if (newHtml) {
+            var bm = newHtml.match(/<body[^>]*class=["']([^"']*)["']/i);
+            if (bm) bodyClass = bm[1];
+            var cm = newHtml.match(/<div[^>]*class=["']([^"']*main-container[^"']*)["']/i);
+            if (cm) containerClass = cm[1];
+        }
+
+        document.body.className = (bodyClass + ' anim-ready').trim();
+        if (containerClass) {
+            var current = document.querySelector('.main-container');
+            if (current) current.className = containerClass;
+        }
+    }
+
     function initSwup() {
         if (typeof Swup === 'undefined') return;
-        var plugins = [];
-        if (typeof SwupBodyClassPlugin !== 'undefined') {
-            plugins.push(new SwupBodyClassPlugin());
-        }
         var swup = new Swup({
             containers: ['.main-container'],
-            animationSelector: false,
-            plugins: plugins
+            animationSelector: false
         });
-        swup.hooks.on('content:replace', function() {
-            // body-class plugin이 className을 통째로 교체하므로 anim-ready 재부착
-            document.body.classList.add('anim-ready');
+        swup.hooks.on('content:replace', function(visit) {
+            syncContainerClass(visit);
             initAnimations();
         });
     }
