@@ -1,7 +1,7 @@
 ---
 title: "#2 - 파일 트리, 그리고 두 번의 미끄럼"
 description: "Path 가 Iterable 인 줄 모르고 짠 토글, 그리고 UTF-8 디코더 한 번에 죽는 EDT"
-date: 2026-05-04
+date: 2026-05-04T10:00:00+09:00
 slug: page-ide-file-tree
 image:
 categories:
