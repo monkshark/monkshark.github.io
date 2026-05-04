@@ -1,7 +1,7 @@
 ---
 title: "#3 - 탭, 폭이 다른 함정, 그리고 deprecated 의 무덤"
 description: "swap 후 보정값이 반대편 임계를 넘어 원복하던 버그, 그리고 권장 대체가 우리 케이스를 안 받아주는 deprecated API 를 Skia 까지 내려가서 푼 이야기"
-date: 2026-05-04
+date: 2026-05-05
 slug: page-ide-tabs-and-preview
 image:
 categories:
