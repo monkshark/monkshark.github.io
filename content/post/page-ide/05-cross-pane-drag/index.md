@@ -1,10 +1,10 @@
 ---
-title: "PAGE 개발기 #5 - 패인 경계를 넘어가는 탭, 자기를 가리는 클리핑들"
+title: "#5 - 패인 경계를 넘어가는 탭, 자기를 가리는 클리핑들"
 description: "분할 화면 패인 사이로 탭을 끌어옮기는 데 필요했던 다섯 번의 클리핑 우회와 그 사이의 실패들"
 date: 2026-05-06T20:00:00+09:00
 slug: page-ide-cross-pane-drag
 categories: ["PAGE 개발기"]
-tags: ["PAGE", "Kotlin", "Compose Desktop", "드래그앤드롭", "클리핑", "z-index"]
+tags: ["PAGE", "Kotlin", "Compose Desktop", "드래그앤드롭", "클리핑", "z-index", "디버깅"]
 ---
 
 분할 화면을 만들고 나니 자연스러운 다음 요구가 따라왔다 — 탭을 한 패인에서 옆 패인으로 끌어다 옮기고 싶다. VSCode, IntelliJ 모두 하는 동작이다. 어렵지 않을 줄 알았다.
@@ -203,5 +203,3 @@ Box(modifier = Modifier.weight(secondWeight).fillMaxHeight().zIndex(secondZIndex
 
 - *Compose modifier가 무엇을 자르고 있는지*는 직관과 다르다. `horizontalScroll`이 자르는 건 알 만했지만, Material3 `Surface`가 자르는 건 한 번 깨질 때까지 잊고 있었다. 떠 있어야 하는 요소가 있으면 그 위에 있는 모든 클립 가능 modifier를 의심해야 한다.
 - *zIndex는 같은 parent의 siblings 사이의 규약이다.* 자식의 zIndex를 아무리 올려도 부모가 형제에게 덮이면 의미가 없다. 떠 있는 요소를 자식에 두지 말고 *떠 있어야 하는 컨테이너 자체의 zIndex*를 올려야 한다.
-
-PR: [#26](https://github.com/Monkshark/PAGE_IDE/pull/26)
