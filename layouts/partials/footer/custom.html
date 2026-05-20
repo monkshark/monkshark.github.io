@@ -90,6 +90,13 @@
             if (window.Stack && typeof window.Stack.init === 'function') {
                 window.Stack.init();
             }
+            if (typeof window.gtag === 'function') {
+                window.gtag('event', 'page_view', {
+                    page_path: location.pathname + location.search,
+                    page_location: location.href,
+                    page_title: document.title
+                });
+            }
         });
     }
 

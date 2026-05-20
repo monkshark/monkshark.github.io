@@ -1,3 +1,28 @@
 <link rel="icon" type="image/png" href="https://github.com/monkshark.png?{{ now.Format "2006-01-02" }}">
 <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
 <script src="https://unpkg.com/swup@4/dist/Swup.umd.js" defer></script>
+
+<script>
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('skipAnalytics') === '1') {
+        localStorage.setItem('skipAnalytics', '1');
+    }
+    if (localStorage.getItem('skipAnalytics') === '1') return;
+
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-RRM69SX3VQ';
+    document.head.appendChild(s);
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', 'G-RRM69SX3VQ', { send_page_view: false });
+    gtag('event', 'page_view', {
+        page_path: location.pathname + location.search,
+        page_location: location.href,
+        page_title: document.title
+    });
+})();
+</script>
