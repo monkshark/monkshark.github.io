@@ -1,5 +1,5 @@
 ---
-title: "GitHub 프로필에 블로그 글 자동으로 띄우기 — 네 번 막힌 기록"
+title: "GitHub Actions로 프로필 README에 최신 블로그 글 띄우기"
 description: "blog-post-workflow로 5분이면 될 줄 알았던 자동화가 code 128, 2026-00-30, 사라진 첫 줄, 권한까지 네 번 막힌 과정"
 date: 2026-06-08
 slug: github-readme-blog-automation
@@ -47,7 +47,7 @@ jobs:
 
 5분이면 끝날 줄 알았다. 네 번 막혔다.
 
-## 1. `code: 128` — checkout이 없었다
+## `code: 128` — checkout이 없었다
 
 push하니 워크플로우는 돌았는데 실패했다. 로그를 보면 피드는 멀쩡히 가져왔다.
 
@@ -66,7 +66,7 @@ https://monkshark.github.io/index.xml runner succeeded. Post count: 29
 
 체크아웃을 넣으니 다음 단계로 넘어갔다. 그리고 더 황당한 게 기다리고 있었다.
 
-## 2. `2026-00-30` — dateformat의 `MM`은 월이 아니다
+## `2026-00-30` — dateformat의 `MM`은 월이 아니다
 
 이제 글 목록은 채워졌는데 날짜가 이랬다.
 
@@ -92,7 +92,7 @@ https://monkshark.github.io/index.xml runner succeeded. Post count: 29
 
 `mm`으로 바꾸니 `2026-05-30`이 제대로 나왔다. 대소문자 하나 차이로 한참 들여다봤다.
 
-## 3. 첫 글이 사라진다 — HTML 주석에 붙은 리스트
+## 첫 글이 사라진다 — HTML 주석에 붙은 리스트
 
 날짜는 고쳤는데, 이번엔 **첫 번째 글만** 렌더링이 깨졌다. 나머지 넷은 멀쩡한 불릿인데 첫 줄만 텍스트로 풀려버렸다.
 
@@ -116,7 +116,7 @@ https://monkshark.github.io/index.xml runner succeeded. Post count: 29
 - [#13 - ...] <sub>2026-05-30</sub>   ← 이제 자기 줄에서 시작
 ```
 
-## 4. 권한: 워크플로우가 저장소 설정을 못 이긴다
+## 권한: 워크플로우가 저장소 설정을 못 이긴다
 
 사실 위 세 개를 고치는 사이, 더 먼저 막혔던 게 권한이었다. 워크플로우에 분명히 이렇게 적어뒀는데도 커밋이 거부됐다.
 
