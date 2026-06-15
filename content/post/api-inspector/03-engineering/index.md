@@ -12,6 +12,8 @@ tags:
     - HTTP
     - 테스트
     - 트러블슈팅
+    - TypeScript
+    - React
 draft: false
 ---
 

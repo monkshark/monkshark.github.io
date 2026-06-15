@@ -12,6 +12,8 @@ tags:
     - UX
     - 보안
     - 리팩터링
+    - TypeScript
+    - React
 draft: false
 ---
 

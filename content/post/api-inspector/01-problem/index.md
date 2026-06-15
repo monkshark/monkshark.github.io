@@ -13,6 +13,8 @@ tags:
     - Manifest V3
     - 보안
     - 프로젝트 시작
+    - TypeScript
+    - React
 draft: false
 ---
 
