@@ -2,12 +2,12 @@
 title: "#2 - 가린 cURL이 그대로 실행되게, 토큰을 변수 자리로"
 description: "마스킹과 플레이스홀더, safe/raw 단순화, IndexedDB 폐기, export↔import 대칭 — 더하기보다 빼기가 어려웠던 결정들"
 date: 2026-06-09
-slug: api-inspector-product
+slug: apiscope-product
 image:
 categories:
-    - API Inspector 개발기
+    - APIScope 개발기
 tags:
-    - API Inspector
+    - APIScope
     - 제품 설계
     - UX
     - 보안

@@ -2,12 +2,12 @@
 title: "#3 - eval이 Promise를 안 기다려서, 전역에 써두고 폴링했다"
 description: "권한 0으로 재전송하기(inspectedWindow.eval + 폴링), HTTP/2 의사헤더, --compressed, 순수 함수 테스트, 퍼저까지"
 date: 2026-06-10
-slug: api-inspector-engineering
+slug: apiscope-engineering
 image:
 categories:
-    - API Inspector 개발기
+    - APIScope 개발기
 tags:
-    - API Inspector
+    - APIScope
     - DevTools
     - HTTP
     - 테스트

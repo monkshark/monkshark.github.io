@@ -2,12 +2,12 @@
 title: "#1 - Copy as cURL이 토큰을 그대로 흘린다"
 description: "DevTools Network 탭의 빈틈과 토큰 유출 문제, 그리고 '최소권한'을 정체성으로 삼은 이유"
 date: 2026-06-08
-slug: api-inspector-problem
+slug: apiscope-problem
 image:
 categories:
-    - API Inspector 개발기
+    - APIScope 개발기
 tags:
-    - API Inspector
+    - APIScope
     - Chrome Extension
     - DevTools
     - Manifest V3
@@ -18,7 +18,7 @@ tags:
 draft: false
 ---
 
-API Inspector는 브라우저 DevTools 안에 탭 하나로 들어가, 페이지가 주고받는 API 요청을 잡아 보여주고, 검색·마스킹·변환하고, 필요하면 그대로 다시 쏘는 확장이다. 한 줄로 줄이면 DevTools의 "Copy as cURL"을 검색·마스킹·변환·재현까지 끌어올린 도구다.
+APIScope는 브라우저 DevTools 안에 탭 하나로 들어가, 페이지가 주고받는 API 요청을 잡아 보여주고, 검색·마스킹·변환하고, 필요하면 그대로 다시 쏘는 확장이다. 한 줄로 줄이면 DevTools의 "Copy as cURL"을 검색·마스킹·변환·재현까지 끌어올린 도구다.
 
 ## Network 탭은 보여주기만 잘한다
 
@@ -28,7 +28,7 @@ API Inspector는 브라우저 DevTools 안에 탭 하나로 들어가, 페이지
 
 ## 이름까지 철학에 맞췄다
 
-처음 이름은 API Sniffer였다. 직관적이긴 한데, sniffer(도청)라는 말이 "네트워크를 가로채지 않는다"는 이 도구의 핵심과 정면으로 부딪혔다. 그래서 API Inspector로 바꿨다. 이름 하나가 제품이 내세우는 약속을 배신하면 안 된다고 봤다.
+처음 이름은 API Sniffer였다. 직관적이긴 한데, sniffer(도청)라는 말이 "네트워크를 가로채지 않는다"는 이 도구의 핵심과 정면으로 부딪혔다. 그래서 한동안 API Inspector로 불렀다. 그런데 inspector(검사관)도 어딘가 들여다보며 캐낸다는 어감이 남았다. 결국 APIScope로 정리했다. scope는 들여다보는 렌즈이자 보는 범위라는 뜻이라, "가로채지 않고 관찰만 한다"는 정체성에 가장 가까웠다. 이름 하나가 제품이 내세우는 약속을 배신하면 안 된다고 봤다.
 
 ## 첫날 박은 한 줄: 최소권한
 
