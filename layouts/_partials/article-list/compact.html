@@ -1,0 +1,65 @@
+<article>
+    <a href="{{ .RelPermalink }}">
+        <div class="article-details">
+            <h2 class="article-title">
+                {{- .Title -}}
+            </h2>
+
+            {{- $description := .Params.description -}}
+            {{- $IsTerm := in .Kind "term" -}}
+            {{- if $IsTerm -}}
+                {{- $description = $description | default (T "list.page" (len .Pages)) -}}
+            {{- end -}}
+            {{- if or $description (not .Date.IsZero) -}}
+                <footer class="article-meta">
+                    {{- if or $IsTerm .Date.IsZero -}}
+                        <span class="article-description">{{- $description -}}</span>
+                    {{- else if not .Date.IsZero -}}
+                        <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+                            {{- .Date | time.Format .Site.Params.dateFormat.published -}}
+                        </time>
+                    {{- end }}
+                </footer>
+            {{- end -}}
+        </div>
+
+        {{- $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) -}}
+        {{ if $image }}
+        <div class="article-image">
+            {{ partial "helper/thumbnail-image" (dict
+                "Resource" $image.Resource
+                "Width" 60
+                "Height" 60
+                "Resize" .Site.Params.ImageProcessing.Thumbnail.Enabled
+                "Attributes" (dict
+                    "src" $image.Permalink
+                    "alt" .Title
+                    "loading" "lazy"
+                    "width" $image.Width
+                    "height" $image.Height
+                )
+            ) }}
+        </div>
+        {{ else }}
+            {{- $catImg := false -}}
+            {{- $catBg := "" -}}
+            {{- range .GetTerms "categories" -}}
+                {{- if and (not $catImg) .Params.image -}}
+                    {{- $ci := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) -}}
+                    {{- if $ci -}}
+                        {{- $catImg = $ci -}}
+                        {{- $catBg = .Params.iconBg -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+            {{ if $catImg }}
+            <div class="article-image article-cat-icon"{{ with $catBg }} style="background-color: {{ . }};"{{ end }}>
+                <img
+                    src="{{ $catImg.Permalink }}"
+                    alt="{{ .Title }}"
+                    loading="lazy">
+            </div>
+            {{ end }}
+        {{ end }}
+    </a>
+</article>

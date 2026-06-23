@@ -1,0 +1,47 @@
+{{ $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) }}
+{{ $isTerm := eq .Kind "term" }}
+<article class="{{ if $image }}has-image{{ end }}{{ if and $isTerm .Params.iconBg }} tile-filled{{ end }}"{{ if and $isTerm .Params.iconBg }} style="background-color: {{ .Params.iconBg }};"{{ end }}>
+    <a href="{{ .RelPermalink }}">
+        {{ if $image }}
+        <div class="article-image">
+            {{ if $isTerm }}
+                <img
+                    src="{{ $image.Permalink }}"
+                    alt="{{ .Title }}"
+                    loading="lazy"
+                    {{ with $image.Width }}width="{{ . }}"{{ end }}
+                    {{ with $image.Height }}height="{{ . }}"{{ end }}>
+            {{ else }}
+                {{ partial "helper/thumbnail-image" (dict
+                    "Resource" $image.Resource
+                    "Width" 250
+                    "Height" 150
+                    "Resize" .Site.Params.ImageProcessing.Thumbnail.Enabled
+                    "Attributes" (dict
+                        "src" $image.Permalink
+                        "alt" (printf "Featured image of post %s" .Title)
+                        "loading" "lazy"
+                        "width" $image.Width
+                        "height" $image.Height
+                    )
+                ) }}
+            {{ end }}
+        </div>
+        {{ end }}
+
+        <div class="article-details"
+            {{- if and (not $isTerm) $image (reflect.IsImageResourceProcessable $image.Resource) -}}
+                {{- $colors := $image.Resource.Colors -}}
+                {{- if $colors -}}
+                    {{- $vibrant := index $colors 0 -}}
+                    {{- $darkMuted := index $colors 1 | default $vibrant -}}
+                    style="background: linear-gradient(0deg, {{ $darkMuted }}80 0%, {{ $vibrant }}C0 100%);"
+                {{- end -}}
+            {{- end -}}
+        >
+            <h2 class="article-title">
+                {{- .Title -}}
+            </h2>
+        </div>
+    </a>
+</article>
