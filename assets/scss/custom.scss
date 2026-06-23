@@ -311,8 +311,12 @@ body.anim-ready .animate-on-scroll.is-visible {
     object-fit: contain;
 }
 
-/* --- 아카이브 글 목록: 우측 카테고리 앱 아이콘 --- */
+/* --- 아카이브 글 목록: 우측 카테고리 앱 아이콘 (archives 에서만 노출) --- */
 .article-list--compact .article-cat-icon {
+    display: none;
+}
+
+.template-archives .article-list--compact .article-cat-icon {
     flex-shrink: 0;
     width: var(--article-compact-image-size);
     height: var(--article-compact-image-size);
