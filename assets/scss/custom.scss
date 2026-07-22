@@ -317,19 +317,18 @@ body.anim-ready .animate-on-scroll.is-visible {
     object-fit: contain;
 }
 
-/* --- 아카이브 글 목록: 우측 카테고리 앱 아이콘 (archives 에서만 노출) --- */
-.article-list--compact .article-cat-icon {
-    display: none;
+.article-list--compact article {
+    --cat: var(--accent-color);
 }
 
-.template-archives .article-list--compact .article-cat-icon {
+.article-list--compact .article-cat-icon {
     flex-shrink: 0;
     width: var(--article-compact-image-size);
     height: var(--article-compact-image-size);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: var(--card-border-radius);
     overflow: hidden;
 
     img {
@@ -337,6 +336,56 @@ body.anim-ready .animate-on-scroll.is-visible {
         height: 100%;
         object-fit: contain;
     }
+}
+
+.article-list--compact article > a:hover {
+    background: color-mix(in srgb, var(--cat) 6%, transparent);
+}
+
+.article-list--compact .article-details {
+    min-width: 0;
+}
+
+.article-list--compact .article-title-line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+
+.article-list--compact .article-no {
+    flex-shrink: 0;
+    font-family: var(--code-font-family);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--card-text-color-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.article-list--compact .article-title {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.article-list--compact .article-description {
+    font-size: 1.4rem;
+    color: var(--card-text-color-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.article-list--compact .article-date {
+    flex-shrink: 0;
+    margin-left: auto;
+    padding-left: var(--spacing-md);
+    font-family: var(--code-font-family);
+    font-size: 12.5px;
+    color: var(--card-text-color-tertiary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 .series-nav {
@@ -712,6 +761,42 @@ body.anim-ready .animate-on-scroll.is-visible {
     font-size: 12px;
     color: var(--card-text-color-tertiary);
     font-variant-numeric: tabular-nums;
+}
+
+.article-category,
+.article-tags {
+    a {
+        background-color: transparent !important;
+        padding: 0;
+        border-radius: 0;
+        transition: color 0.2s ease, opacity 0.2s ease;
+    }
+}
+
+.article-category a {
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: var(--accent-color) !important;
+}
+
+.article-category a:hover {
+    opacity: 0.7;
+}
+
+.article-tags a {
+    font-family: var(--code-font-family);
+    font-size: 12.5px;
+    color: var(--card-text-color-tertiary) !important;
+}
+
+.article-tags a::before {
+    content: '#';
+    opacity: 0.55;
+}
+
+.article-tags a:hover {
+    color: var(--accent-color) !important;
 }
 
 /* --- reduce-motion 존중 --- */

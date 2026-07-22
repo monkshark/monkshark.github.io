@@ -1,31 +1,39 @@
-<article>
+{{ $seriesCat := "" }}
+{{ with .Params.categories }}{{ $seriesCat = index . 0 }}{{ end }}
+{{ $num := "" }}
+{{ $total := 0 }}
+{{ $title := .Title }}
+{{ if and $seriesCat (findRE "^#[0-9]+" $title) }}
+    {{ $num = index (findRE "[0-9]+" $title 1) 0 }}
+    {{ $title = replaceRE "^#[0-9]+\\s*[-–—]?\\s*" "" $title }}
+    {{ $total = len (where site.RegularPages "Params.categories" "intersect" (slice $seriesCat)) }}
+{{ end }}
+
+{{ $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) }}
+{{ $catImg := false }}
+{{ $catBg := "" }}
+{{ if not $image }}
+    {{ range .GetTerms "categories" }}
+        {{ if and (not $catImg) .Params.image }}
+            {{ $ci := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) }}
+            {{ if $ci }}
+                {{ $catImg = $ci }}
+                {{ $catBg = .Params.iconBg }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}
+
+{{ $description := .Params.description }}
+{{ $IsTerm := in .Kind "term" }}
+{{ if $IsTerm }}
+    {{ $description = $description | default (T "list.page" (len .Pages)) }}
+{{ end }}
+
+<article{{ with $catBg }} style="--cat: {{ . }};"{{ end }}>
     <a href="{{ .RelPermalink }}">
-        <div class="article-details">
-            <h2 class="article-title">
-                {{- .Title -}}
-            </h2>
-
-            {{- $description := .Params.description -}}
-            {{- $IsTerm := in .Kind "term" -}}
-            {{- if $IsTerm -}}
-                {{- $description = $description | default (T "list.page" (len .Pages)) -}}
-            {{- end -}}
-            {{- if or $description (not .Date.IsZero) -}}
-                <footer class="article-meta">
-                    {{- if or $IsTerm .Date.IsZero -}}
-                        <span class="article-description">{{- $description -}}</span>
-                    {{- else if not .Date.IsZero -}}
-                        <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
-                            {{- .Date | time.Format .Site.Params.dateFormat.published -}}
-                        </time>
-                    {{- end }}
-                </footer>
-            {{- end -}}
-        </div>
-
-        {{- $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) -}}
-        {{ if $image }}
-        <div class="article-image">
+        <div class="article-image{{ if and (not $image) $catImg }} article-cat-icon{{ end }}"{{ if and (not $image) $catBg }} style="background-color: {{ $catBg }};"{{ end }}>
+            {{ if $image }}
             {{ partial "helper/thumbnail-image" (dict
                 "Resource" $image.Resource
                 "Width" 60
@@ -39,27 +47,28 @@
                     "height" $image.Height
                 )
             ) }}
-        </div>
-        {{ else }}
-            {{- $catImg := false -}}
-            {{- $catBg := "" -}}
-            {{- range .GetTerms "categories" -}}
-                {{- if and (not $catImg) .Params.image -}}
-                    {{- $ci := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) -}}
-                    {{- if $ci -}}
-                        {{- $catImg = $ci -}}
-                        {{- $catBg = .Params.iconBg -}}
-                    {{- end -}}
-                {{- end -}}
-            {{- end -}}
-            {{ if $catImg }}
-            <div class="article-image article-cat-icon"{{ with $catBg }} style="background-color: {{ . }};"{{ end }}>
+            {{ else if $catImg }}
                 <img
                     src="{{ $catImg.Permalink }}"
-                    alt="{{ .Title }}"
+                    alt="{{ $title }}"
                     loading="lazy">
-            </div>
             {{ end }}
+        </div>
+
+        <div class="article-details">
+            <div class="article-title-line">
+                {{ if $num }}<span class="article-no">#{{ int $num }}{{ if gt $total 1 }} / {{ $total }}{{ end }}</span>{{ end }}
+                <h2 class="article-title">{{- $title -}}</h2>
+            </div>
+            {{ if $description }}
+            <span class="article-description">{{- $description -}}</span>
+            {{ end }}
+        </div>
+
+        {{ if not .Date.IsZero }}
+        <time class="article-date" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+            {{- .Date | time.Format .Site.Params.dateFormat.published -}}
+        </time>
         {{ end }}
     </a>
 </article>
