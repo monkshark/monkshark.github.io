@@ -1,0 +1,9 @@
+{{- $name := .Get 0 -}}
+{{- $icon := .Get 1 -}}
+{{- $tagName := or (.Get 2) $name -}}
+{{- $term := site.GetPage (printf "/tags/%s" (urlize $tagName)) -}}
+{{- if $term -}}
+<a class="tech-icon tech-icon--link" href="{{ $term.RelPermalink }}"><i class="{{ $icon }}"></i><span class="tech-tooltip">{{ $name }} · {{ len $term.Pages }}편</span></a>
+{{- else -}}
+<div class="tech-icon"><i class="{{ $icon }}"></i><span class="tech-tooltip">{{ $name }}</span></div>
+{{- end -}}

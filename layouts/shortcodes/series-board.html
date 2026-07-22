@@ -1,0 +1,34 @@
+{{- $items := slice -}}
+{{- range $name, $weighted := site.Taxonomies.categories -}}
+    {{- $pages := $weighted.Pages -}}
+    {{- $isSeries := false -}}
+    {{- range $pages -}}
+        {{- if findRE "^#[0-9]+" .Title -}}{{- $isSeries = true -}}{{- end -}}
+    {{- end -}}
+    {{- if $isSeries -}}
+        {{- with site.GetPage (printf "/categories/%s" $name) -}}
+            {{- $sorted := $pages.ByDate.Reverse -}}
+            {{- $latest := index $sorted 0 -}}
+            {{- $items = $items | append (dict
+                "term" .
+                "count" (len $sorted)
+                "latest" $latest
+                "date" $latest.Date) -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- $items = sort $items "date" "desc" -}}
+
+<div class="series-board">
+{{- range $items }}
+    {{- $title := replaceRE "^#[0-9]+\\s*[-–—]?\\s*" "" .latest.Title }}
+    <a class="series-board__card" href="{{ .term.RelPermalink }}">
+        <span class="series-board__head">
+            <span class="series-board__name">{{ .term.LinkTitle }}</span>
+            <span class="series-board__count">{{ .count }}편</span>
+        </span>
+        <span class="series-board__latest">{{ $title }}</span>
+        <time class="series-board__date" datetime="{{ .date.Format `2006-01-02` }}">최근 글 · {{ .date.Format "2006-01-02" }}</time>
+    </a>
+{{- end }}
+</div>

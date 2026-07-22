@@ -1,0 +1,18 @@
+{{- $pages := .Pages -}}
+{{- $ctx := .Context -}}
+
+{{- if eq $ctx.Site.Params.SortBy "lastmod" -}}
+    {{- $pages = $pages.ByLastmod.Reverse -}}
+{{- end -}}
+
+{{- if and (eq $ctx.Kind "term") (eq $ctx.Data.Plural "categories") -}}
+    {{- $isSeries := false -}}
+    {{- range $pages -}}
+        {{- if findRE "^#[0-9]+" .Title -}}{{- $isSeries = true -}}{{- end -}}
+    {{- end -}}
+    {{- if $isSeries -}}
+        {{- $pages = sort $pages "Date" "asc" -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $pages -}}

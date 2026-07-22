@@ -42,6 +42,19 @@ Java로 코드를 시작해 Android, Flutter, 웹과 백엔드, UX 디자인까�
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+.tech-icon--link { cursor: pointer; }
+.tech-icon--link::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  opacity: 0.55;
+}
+.tech-icon--link:hover::after { opacity: 1; }
 .tech-icon i { font-size: 28px; }
 .tech-icon .tech-tooltip {
   position: absolute;
@@ -64,82 +77,86 @@ Java로 코드를 시작해 Android, Flutter, 웹과 백엔드, UX 디자인까�
 <div class="tech-section">
 <h3>Language</h3>
 <div class="tech-icons">
-  <div class="tech-icon"><i class="devicon-java-plain colored"></i><span class="tech-tooltip">Java</span></div>
-  <div class="tech-icon"><i class="devicon-kotlin-plain colored"></i><span class="tech-tooltip">Kotlin</span></div>
-  <div class="tech-icon"><i class="devicon-javascript-plain colored"></i><span class="tech-tooltip">JavaScript</span></div>
-  <div class="tech-icon"><i class="devicon-typescript-plain colored"></i><span class="tech-tooltip">TypeScript</span></div>
-  <div class="tech-icon"><i class="devicon-cplusplus-plain colored"></i><span class="tech-tooltip">C++</span></div>
-  <div class="tech-icon"><i class="devicon-csharp-plain colored"></i><span class="tech-tooltip">C#</span></div>
-  <div class="tech-icon"><i class="devicon-objectivec-plain colored"></i><span class="tech-tooltip">Obj-C</span></div>
-  <div class="tech-icon"><i class="devicon-dart-plain colored"></i><span class="tech-tooltip">Dart</span></div>
-  <div class="tech-icon"><i class="devicon-python-plain colored"></i><span class="tech-tooltip">Python</span></div>
+{{< tech "Java" "devicon-java-plain colored" >}}
+{{< tech "Kotlin" "devicon-kotlin-plain colored" >}}
+{{< tech "JavaScript" "devicon-javascript-plain colored" >}}
+{{< tech "TypeScript" "devicon-typescript-plain colored" >}}
+{{< tech "C++" "devicon-cplusplus-plain colored" >}}
+{{< tech "C#" "devicon-csharp-plain colored" >}}
+{{< tech "Obj-C" "devicon-objectivec-plain colored" >}}
+{{< tech "Dart" "devicon-dart-plain colored" >}}
+{{< tech "Python" "devicon-python-plain colored" >}}
 </div>
 </div>
 
 <div class="tech-section">
 <h3>Mobile</h3>
 <div class="tech-icons">
-  <div class="tech-icon"><i class="devicon-android-plain colored"></i><span class="tech-tooltip">Android</span></div>
-  <div class="tech-icon"><i class="devicon-jetpackcompose-plain colored"></i><span class="tech-tooltip">Jetpack Compose</span></div>
-  <div class="tech-icon"><i class="devicon-apple-original"></i><span class="tech-tooltip">iOS</span></div>
-  <div class="tech-icon"><i class="devicon-swift-plain colored"></i><span class="tech-tooltip">SwiftUI</span></div>
-  <div class="tech-icon"><i class="devicon-flutter-plain colored"></i><span class="tech-tooltip">Flutter</span></div>
-  <div class="tech-icon"><i class="devicon-react-original colored"></i><span class="tech-tooltip">React Native</span></div>
+{{< tech "Android" "devicon-android-plain colored" >}}
+{{< tech "Jetpack Compose" "devicon-jetpackcompose-plain colored" >}}
+{{< tech "iOS" "devicon-apple-original" >}}
+{{< tech "SwiftUI" "devicon-swift-plain colored" >}}
+{{< tech "Flutter" "devicon-flutter-plain colored" >}}
+{{< tech "React Native" "devicon-react-original colored" >}}
 </div>
 </div>
 
 <div class="tech-section">
 <h3>Web</h3>
 <div class="tech-icons">
-  <div class="tech-icon"><i class="devicon-html5-plain colored"></i><span class="tech-tooltip">HTML</span></div>
-  <div class="tech-icon"><i class="devicon-css3-plain colored"></i><span class="tech-tooltip">CSS</span></div>
-  <div class="tech-icon"><i class="devicon-sass-original colored"></i><span class="tech-tooltip">SCSS</span></div>
-  <div class="tech-icon"><i class="devicon-tailwindcss-original colored"></i><span class="tech-tooltip">Tailwind CSS</span></div>
-  <div class="tech-icon"><i class="devicon-react-original colored"></i><span class="tech-tooltip">React</span></div>
-  <div class="tech-icon"><i class="devicon-nextjs-plain"></i><span class="tech-tooltip">Next.js</span></div>
+{{< tech "HTML" "devicon-html5-plain colored" >}}
+{{< tech "CSS" "devicon-css3-plain colored" >}}
+{{< tech "SCSS" "devicon-sass-original colored" >}}
+{{< tech "Tailwind CSS" "devicon-tailwindcss-original colored" >}}
+{{< tech "React" "devicon-react-original colored" >}}
+{{< tech "Next.js" "devicon-nextjs-plain" >}}
 </div>
 </div>
 
 <div class="tech-section">
 <h3>Backend</h3>
 <div class="tech-icons">
-  <div class="tech-icon"><i class="devicon-nodejs-plain colored"></i><span class="tech-tooltip">Node.js</span></div>
-  <div class="tech-icon"><i class="devicon-express-original"></i><span class="tech-tooltip">Express</span></div>
-  <div class="tech-icon"><i class="devicon-spring-original colored"></i><span class="tech-tooltip">Spring Boot</span></div>
-  <div class="tech-icon"><i class="devicon-mysql-original colored"></i><span class="tech-tooltip">MySQL</span></div>
-  <div class="tech-icon"><i class="devicon-mongodb-plain colored"></i><span class="tech-tooltip">MongoDB</span></div>
-  <div class="tech-icon"><i class="devicon-firebase-plain colored"></i><span class="tech-tooltip">Firebase</span></div>
+{{< tech "Node.js" "devicon-nodejs-plain colored" >}}
+{{< tech "Express" "devicon-express-original" >}}
+{{< tech "Spring Boot" "devicon-spring-original colored" >}}
+{{< tech "MySQL" "devicon-mysql-original colored" >}}
+{{< tech "MongoDB" "devicon-mongodb-plain colored" >}}
+{{< tech "Firebase" "devicon-firebase-plain colored" >}}
 </div>
 </div>
 
 <div class="tech-section">
 <h3>CI/CD</h3>
 <div class="tech-icons">
-  <div class="tech-icon"><i class="devicon-gradle-original colored"></i><span class="tech-tooltip">Gradle</span></div>
-  <div class="tech-icon"><i class="devicon-githubactions-plain colored"></i><span class="tech-tooltip">GitHub Actions</span></div>
-  <div class="tech-icon"><i class="devicon-docker-plain colored"></i><span class="tech-tooltip">Docker</span></div>
-  <div class="tech-icon"><i class="devicon-kubernetes-plain colored"></i><span class="tech-tooltip">Kubernetes</span></div>
-  <div class="tech-icon"><i class="devicon-vercel-original"></i><span class="tech-tooltip">Vercel</span></div>
-  <div class="tech-icon"><i class="devicon-junit-plain colored"></i><span class="tech-tooltip">JUnit</span></div>
-  <div class="tech-icon"><i class="devicon-codecov-plain colored"></i><span class="tech-tooltip">Codecov</span></div>
+{{< tech "Gradle" "devicon-gradle-original colored" >}}
+{{< tech "GitHub Actions" "devicon-githubactions-plain colored" >}}
+{{< tech "Docker" "devicon-docker-plain colored" >}}
+{{< tech "Kubernetes" "devicon-kubernetes-plain colored" >}}
+{{< tech "Vercel" "devicon-vercel-original" >}}
+{{< tech "JUnit" "devicon-junit-plain colored" >}}
+{{< tech "Codecov" "devicon-codecov-plain colored" >}}
 </div>
 </div>
 
 <div class="tech-section">
 <h3>Tools</h3>
 <div class="tech-icons">
-  <div class="tech-icon"><i class="devicon-intellij-plain colored"></i><span class="tech-tooltip">IntelliJ</span></div>
-  <div class="tech-icon"><i class="devicon-webstorm-plain colored"></i><span class="tech-tooltip">WebStorm</span></div>
-  <div class="tech-icon"><i class="devicon-rider-plain colored"></i><span class="tech-tooltip">Rider</span></div>
-  <div class="tech-icon"><i class="devicon-clion-plain colored"></i><span class="tech-tooltip">CLion</span></div>
-  <div class="tech-icon"><i class="devicon-vscode-plain colored"></i><span class="tech-tooltip">VS Code</span></div>
-  <div class="tech-icon"><i class="devicon-git-plain colored"></i><span class="tech-tooltip">Git</span></div>
-  <div class="tech-icon"><i class="devicon-github-original"></i><span class="tech-tooltip">GitHub</span></div>
-  <div class="tech-icon"><i class="devicon-figma-plain colored"></i><span class="tech-tooltip">Figma</span></div>
-  <div class="tech-icon"><i class="devicon-postman-plain colored"></i><span class="tech-tooltip">Postman</span></div>
-  <div class="tech-icon"><i class="devicon-notion-plain"></i><span class="tech-tooltip">Notion</span></div>
+{{< tech "IntelliJ" "devicon-intellij-plain colored" >}}
+{{< tech "WebStorm" "devicon-webstorm-plain colored" >}}
+{{< tech "Rider" "devicon-rider-plain colored" >}}
+{{< tech "CLion" "devicon-clion-plain colored" >}}
+{{< tech "VS Code" "devicon-vscode-plain colored" >}}
+{{< tech "Git" "devicon-git-plain colored" >}}
+{{< tech "GitHub" "devicon-github-original" >}}
+{{< tech "Figma" "devicon-figma-plain colored" >}}
+{{< tech "Postman" "devicon-postman-plain colored" >}}
+{{< tech "Notion" "devicon-notion-plain" >}}
 </div>
 </div>
+
+## 연재 중
+
+{{< series-board >}}
 
 ## 연락처
 
