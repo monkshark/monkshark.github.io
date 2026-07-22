@@ -1,0 +1,66 @@
+{{ $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) }}
+{{ $cat := "" }}
+{{ with .Params.categories }}{{ $cat = index . 0 }}{{ end }}
+{{ $catTerm := false }}
+{{ with .GetTerms "categories" }}{{ $catTerm = index . 0 }}{{ end }}
+{{ $num := "" }}
+{{ $total := 0 }}
+{{ $title := .Title }}
+{{ if and $cat (findRE "^#[0-9]+" $title) }}
+    {{ $num = index (findRE "[0-9]+" $title 1) 0 }}
+    {{ $title = replaceRE "^#[0-9]+\\s*[-–—]?\\s*" "" $title }}
+    {{ $total = len (where site.RegularPages "Params.categories" "intersect" (slice $cat)) }}
+{{ end }}
+<article class="post-card{{ if $image }} has-image{{ end }}">
+    {{ if $image }}
+    <div class="article-image">
+        <a href="{{ .RelPermalink }}">
+            {{ partial "helper/responsive-image" (dict
+                "Resource" $image.Resource
+                "Widths" (cond .Site.Params.ImageProcessing.Content.Enabled .Site.Params.ImageProcessing.Content.Widths nil)
+                "Attributes" (dict
+                    "src" $image.Permalink
+                    "width" $image.Width
+                    "height" $image.Height
+                    "alt" (printf "Featured image of post %s" .Title)
+                    "loading" "lazy"
+                    "sizes" "(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px"
+                )
+            ) }}
+        </a>
+    </div>
+    {{ end }}
+
+    <div class="post-card__body">
+        <div class="post-card__top">
+            {{ if $catTerm }}
+            <a class="post-card__cat" href="{{ $catTerm.RelPermalink }}">{{ $catTerm.LinkTitle }}</a>
+            {{ end }}
+            {{ if $num }}
+            <span class="post-card__no">#{{ int $num }}{{ if gt $total 1 }} / {{ $total }}{{ end }}</span>
+            {{ end }}
+            {{ if not .Date.IsZero }}
+            <time class="post-card__date" datetime='{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}'>{{ .Date | time.Format site.Params.dateFormat.published }}</time>
+            {{ end }}
+        </div>
+
+        <h2 class="post-card__title">
+            <a href="{{ .RelPermalink }}">{{ $title }}</a>
+        </h2>
+
+        {{ with .Params.description }}
+        <p class="post-card__desc">{{ . }}</p>
+        {{ end }}
+
+        <div class="post-card__foot">
+            {{ with .GetTerms "tags" }}
+            <div class="post-card__tags">
+                {{ range first 5 . }}
+                <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+                {{ end }}
+            </div>
+            {{ end }}
+            <span class="post-card__rt">{{ T "article.readingTime" .ReadingTime }}</span>
+        </div>
+    </div>
+</article>
