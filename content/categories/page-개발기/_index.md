@@ -4,4 +4,5 @@ description: "바닥부터 직접 만드는 데스크톱 IDE 개발기입니다.
 slug: "page-ide"
 image: "icon.png"
 iconBg: "#232323"
+accentColor: "#00E5FF"
 ---

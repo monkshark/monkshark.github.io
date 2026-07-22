@@ -3,7 +3,8 @@
 
 {{ if $isTerm }}
     {{ $catBg := .Params.iconBg }}
-    <article class="cat-card"{{ with $catBg }} style="--cat: {{ . }};"{{ end }}>
+    {{ $catAccent := .Params.accentColor | default $catBg }}
+    <article class="cat-card"{{ with $catAccent }} style="--cat: {{ . }};"{{ end }}>
         <a href="{{ .RelPermalink }}">
             <div class="cat-card__top">
                 {{ if $image }}

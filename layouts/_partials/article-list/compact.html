@@ -12,6 +12,7 @@
 {{ $image := partial "helper/image" (dict "Image" .Params.image "Resources" .Resources "Context" .) }}
 {{ $catImg := false }}
 {{ $catBg := "" }}
+{{ $catAccent := "" }}
 {{ if not $image }}
     {{ range .GetTerms "categories" }}
         {{ if and (not $catImg) .Params.image }}
@@ -19,6 +20,7 @@
             {{ if $ci }}
                 {{ $catImg = $ci }}
                 {{ $catBg = .Params.iconBg }}
+                {{ $catAccent = .Params.accentColor | default $catBg }}
             {{ end }}
         {{ end }}
     {{ end }}
@@ -30,7 +32,7 @@
     {{ $description = $description | default (T "list.page" (len .Pages)) }}
 {{ end }}
 
-<article{{ with $catBg }} style="--cat: {{ . }};"{{ end }}>
+<article{{ with $catAccent }} style="--cat: {{ . }};"{{ end }}>
     <a href="{{ .RelPermalink }}">
         <div class="article-image{{ if and (not $image) $catImg }} article-cat-icon{{ end }}"{{ if and (not $image) $catBg }} style="background-color: {{ $catBg }};"{{ end }}>
             {{ if $image }}
