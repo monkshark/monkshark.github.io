@@ -157,7 +157,7 @@ intrinsic size 는 SVG 의 `width`/`height` 를 우선 보고, 단위가 percent
 
 ## 줌은 디폴트가 작은 게 좋다
 
-미리보기를 처음 붙였을 때는 `ContentScale.Fit` 으로 패널에 꽉 차게 채웠다. 큰 이미지일수록 답답했다. 사용자가 작게 보고 싶다 했고, 동의가 갔다 미리보기는 "전체 분위기" 를 보여주는 자리다.
+미리보기를 처음 붙였을 때는 `ContentScale.Fit` 으로 패널에 꽉 차게 채웠다. 큰 이미지일수록 답답했다. 미리보기는 "전체 분위기" 를 보여주는 자리다.
 
 ```kotlin
 val baseline = min(1f, fit) * 0.7f
