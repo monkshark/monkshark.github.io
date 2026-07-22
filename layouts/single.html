@@ -25,24 +25,40 @@
         {{ partial "article/components/links" . }}
     {{ end }}
 
-    <!-- 이전글 / 다음글 -->
-    {{ $prev := .PrevInSection }}
-    {{ $next := .NextInSection }}
-    {{ if or $prev $next }}
-    <nav class="article-nav" style="display:flex; gap:16px; margin:32px auto; max-width:var(--article-max-width, 800px); padding:0 var(--card-padding, 20px);">
-        {{ if $next }}
-        <a href="{{ $next.Permalink }}" style="flex:1; min-width:0; display:flex; flex-direction:column; padding:24px; border-radius:14px; background:var(--card-background); box-shadow:0 1px 3px rgba(0,0,0,0.08); text-decoration:none; transition:box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.08)'">
-            <span style="font-size:13px; color:var(--card-text-color-secondary);">← 이전 글</span>
-            <span style="font-size:17px; font-weight:600; color:var(--card-text-color-main); margin-top:8px; line-height:1.4;">{{ $next.Title }}</span>
-        </a>
+    {{ $seriesName := "" }}
+    {{ with .Params.categories }}{{ $seriesName = index . 0 }}{{ end }}
+    {{ if and $seriesName (findRE "^#[0-9]+" .Title) }}
+        {{ $seriesPages := (where site.RegularPages "Params.categories" "intersect" (slice $seriesName)).ByDate }}
+        {{ $total := len $seriesPages }}
+        {{ $idx := -1 }}
+        {{ range $i, $p := $seriesPages }}{{ if eq $p.RelPermalink $.RelPermalink }}{{ $idx = $i }}{{ end }}{{ end }}
+        {{ $prev := false }}
+        {{ $next := false }}
+        {{ if gt $idx 0 }}{{ $prev = index $seriesPages (sub $idx 1) }}{{ end }}
+        {{ if and (ge $idx 0) (lt (add $idx 1) $total) }}{{ $next = index $seriesPages (add $idx 1) }}{{ end }}
+        {{ if or $prev $next }}
+        <nav class="series-nav">
+            <div class="series-nav__head">
+                <span class="series-nav__name">{{ $seriesName }}</span>
+                <span class="series-nav__track"><span class="series-nav__fill" style="width:{{ math.Round (mul (div (add $idx 1.0) $total) 100) }}%"></span></span>
+                <span class="series-nav__count">{{ add $idx 1 }} / {{ $total }}</span>
+            </div>
+            <div class="series-nav__cards">
+                {{ if $prev }}
+                <a class="series-nav__card series-nav__card--prev" href="{{ $prev.Permalink }}">
+                    <span class="series-nav__kicker">← 이전 글</span>
+                    <span class="series-nav__title">{{ $prev.Title }}</span>
+                </a>
+                {{ end }}
+                {{ if $next }}
+                <a class="series-nav__card series-nav__card--next" href="{{ $next.Permalink }}">
+                    <span class="series-nav__kicker">다음 글 →</span>
+                    <span class="series-nav__title">{{ $next.Title }}</span>
+                </a>
+                {{ end }}
+            </div>
+        </nav>
         {{ end }}
-        {{ if $prev }}
-        <a href="{{ $prev.Permalink }}" style="flex:1; min-width:0; display:flex; flex-direction:column; {{ if not $next }}align-items:flex-end;{{ else }}align-items:flex-end;{{ end }} padding:24px; border-radius:14px; background:var(--card-background); box-shadow:0 1px 3px rgba(0,0,0,0.08); text-decoration:none; transition:box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 6px 16px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='0 1px 3px rgba(0,0,0,0.08)'">
-            <span style="font-size:13px; color:var(--card-text-color-secondary);">다음 글 →</span>
-            <span style="font-size:17px; font-weight:600; color:var(--card-text-color-main); margin-top:8px; line-height:1.4; text-align:right;">{{ $prev.Title }}</span>
-        </a>
-        {{ end }}
-    </nav>
     {{ end }}
 
     {{ partial "article/components/related-content" . }}

@@ -26,7 +26,7 @@ data class TreeNode(val path: Path, val depth: Int, val isDirectory: Boolean)
 fun listTree(root: Path, expanded: Set<Path>): List<TreeNode>
 ```
 
-`expanded` 만 들고 있으면 그때그때 디스크를 다시 읽어 평탄화된 행 리스트를 돌려준다. UI 는 LazyColumn 에 그대로 붙이면 끝. 익스팬드/콜랩스 상태가 디스크와 분리돼 있어 테스트도 깔끔하다 — `@TempDir` 하나로 7 케이스를 다 돌렸다.
+`expanded` 만 들고 있으면 그때그때 디스크를 다시 읽어 평탄화된 행 리스트를 돌려준다. UI 는 LazyColumn 에 그대로 붙이면 끝. 익스팬드/콜랩스 상태가 디스크와 분리돼 있어 테스트도 깔끔하다 `@TempDir` 하나로 7 케이스를 다 돌렸다.
 
 여기까지는 어렵지 않았다. 미끄러진 건 UI 가 켜진 다음이었다.
 
@@ -81,9 +81,9 @@ val toggleExpanded: (Path) -> Unit = { p ->
 
 `C:\Users\manne\Desktop\hansol_hs_java_app\.idea` 의 path 컴포넌트가 정확히 다섯이다. `Users`, `manne`, `Desktop`, `hansol_hs_java_app`, `.idea`.
 
-`java.nio.file.Path` 는 `Iterable<Path>` 를 구현한다. 이름 컴포넌트들을 순회하는 인터페이스다. 그래서 `Set<Path>.plus(Path)` 가 element 오버로드 (`plus(T)`) 가 아니라 iterable 오버로드 (`plus(Iterable<T>)`) 로 결합됐다. 두 오버로드가 모두 적용 가능할 때 Kotlin 이 어느 쪽을 우선하는지에 대해서는 stdlib 의 `@HidesMembers` 와 overload resolution 규칙을 더 파봐야 정확히 답할 수 있겠다. 다만 동작 결과는 분명하다 — 한 번의 토글이 path 의 모든 name 컴포넌트를 set 에 풀어 넣는다.
+`java.nio.file.Path` 는 `Iterable<Path>` 를 구현한다. 이름 컴포넌트들을 순회하는 인터페이스다. 그래서 `Set<Path>.plus(Path)` 가 element 오버로드 (`plus(T)`) 가 아니라 iterable 오버로드 (`plus(Iterable<T>)`) 로 결합됐다. 두 오버로드가 모두 적용 가능할 때 Kotlin 이 어느 쪽을 우선하는지에 대해서는 stdlib 의 `@HidesMembers` 와 overload resolution 규칙을 더 파봐야 정확히 답할 수 있겠다. 다만 동작 결과는 분명하다 한 번의 토글이 path 의 모든 name 컴포넌트를 set 에 풀어 넣는다.
 
-두 번째 클릭부터는 더 황당했다. `p in before` 는 false 를 돌려준다 — 풀어넣은 건 name 조각들이고, p 는 전체 경로이기 때문이다. 그래서 또 else 분기를 타고 `before + p` 를 호출. 이미 set 에 들어 있는 name 조각들이라 dedupe 돼서 size 는 그대로 6. 무한 no-op.
+두 번째 클릭부터는 더 황당했다. `p in before` 는 false 를 돌려준다 풀어넣은 건 name 조각들이고, p 는 전체 경로이기 때문이다. 그래서 또 else 분기를 타고 `before + p` 를 호출. 이미 set 에 들어 있는 name 조각들이라 dedupe 돼서 size 는 그대로 6. 무한 no-op.
 
 수정도 한 줄이었다.
 
@@ -115,7 +115,7 @@ private fun ResizeHandle(onDeltaDp: (Dp) -> Unit) {
 }
 ```
 
-delta 만 위로 올리고, 호출 측에서 `(현재 + delta).coerceIn(160.dp, 600.dp)` 로 클램프. AWT 커서 상수가 그대로 먹는 것도 좋았다 — Compose Desktop 의 `PointerIcon(java.awt.Cursor)` 오버로드가 둘을 이어 준다.
+delta 만 위로 올리고, 호출 측에서 `(현재 + delta).coerceIn(160.dp, 600.dp)` 로 클램프. AWT 커서 상수가 그대로 먹는 것도 좋았다 Compose Desktop 의 `PointerIcon(java.awt.Cursor)` 오버로드가 둘을 이어 준다.
 
 ## 돌아보면
 

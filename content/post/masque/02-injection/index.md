@@ -34,7 +34,7 @@ draft: false
 
 ## chrome.userScripts로 코드를 실어 보냈다
 
-답은 `chrome.userScripts` API였다. 정확히 이 용도 — 동적 설정을 코드 문자열에 담아 MAIN world·document_start에 등록 — 를 위한 물건이다. 위장 함수를 통째로 직렬화하고, 그 뒤에 페르소나와 옵션을 JSON으로 붙여서 즉시 실행되는 한 덩어리로 만들었다.
+답은 `chrome.userScripts` API였다. 정확히 이 용도 동적 설정을 코드 문자열에 담아 MAIN world·document_start에 등록 를 위한 물건이다. 위장 함수를 통째로 직렬화하고, 그 뒤에 페르소나와 옵션을 JSON으로 붙여서 즉시 실행되는 한 덩어리로 만들었다.
 
 ```js
 chrome.userScripts.register([{
@@ -60,7 +60,7 @@ chrome.userScripts.register([{
 
 JS 표면을 다 바꿔도, HTTP 헤더가 진짜 User-Agent를 흘리면 앞서 경계한 그 모순이 그대로 생긴다. 헤더는 userScripts로 못 만지니 별도 경로가 필요했다.
 
-`chrome.declarativeNetRequest` 동적 규칙으로 User-Agent·Accept-Language·sec-ch-ua 계열 헤더를 같은 페르소나 값으로 덮었다. 주입은 userScripts, 헤더는 DNR — 경로는 둘이지만 출처는 하나의 페르소나다. 그래서 JS에서 읽는 값과 서버가 받는 헤더가 항상 같은 사람을 가리킨다. 일관성이라는 원칙이 여기서 실제 구현으로 떨어졌다.
+`chrome.declarativeNetRequest` 동적 규칙으로 User-Agent·Accept-Language·sec-ch-ua 계열 헤더를 같은 페르소나 값으로 덮었다. 주입은 userScripts, 헤더는 DNR 경로는 둘이지만 출처는 하나의 페르소나다. 그래서 JS에서 읽는 값과 서버가 받는 헤더가 항상 같은 사람을 가리킨다. 일관성이라는 원칙이 여기서 실제 구현으로 떨어졌다.
 
 ## 돌아보면
 

@@ -82,7 +82,7 @@ Future<void> _sendMessage() async {
 1. `messages` 서브컬렉션에 메시지 문서 추가
 2. 부모 `chats` 문서의 `lastMessage`, `lastMessageAt`, 상대방의 `unreadCount` 업데이트
 
-`unreadCount.${widget.otherUid}` — dot notation으로 상대방의 읽지 않은 메시지 수만 증가시킨다. 내 카운트는 건드리지 않는다.
+`unreadCount.${widget.otherUid}` dot notation으로 상대방의 읽지 않은 메시지 수만 증가시킨다. 내 카운트는 건드리지 않는다.
 
 입력 필드를 먼저 비우고(`_controller.clear()`) 나서 네트워크 요청을 보낸다. 전송이 완료될 때까지 입력 필드가 남아있으면 사용자가 답답해하니까.
 
@@ -153,7 +153,7 @@ Future<void> _deleteForAll(String messageId) async {
 
 `deleted: true`로 표시하고 내용을 "삭제된 메시지"로 바꾼다. 양쪽 모두에게 "삭제된 메시지"가 보인다.
 
-단, 조건이 있다: **보낸 지 1시간 이내**이고 **상대방이 아직 읽지 않았을 때**만 가능하다.
+단, 조건이 있다: 보낸 지 1시간 이내이고 상대방이 아직 읽지 않았을 때만 가능하다.
 
 ```dart
 canDeleteForAll = isWithinOneHour && (otherUnread > 0);
@@ -216,6 +216,6 @@ Future<void> _leaveChat() async {
 
 ## 돌아보면
 
-채팅의 핵심은 "실시간"이라기보다 "상태 동기화"였다. 읽음/안읽음, 삭제됨/안삭제됨, 참가 중/나감 — 양쪽의 상태가 항상 일치해야 한다. Firestore의 실시간 스트리밍이 이 동기화를 거의 공짜로 해주지만, 구조를 잘 잡아야 그 혜택을 받을 수 있다.
+채팅의 핵심은 "실시간"이라기보다 "상태 동기화"였다. 읽음/안읽음, 삭제됨/안삭제됨, 참가 중/나감 양쪽의 상태가 항상 일치해야 한다. Firestore의 실시간 스트리밍이 이 동기화를 거의 공짜로 해주지만, 구조를 잘 잡아야 그 혜택을 받을 수 있다.
 
 uid 정렬로 채팅방 ID를 만드는 건 작은 결정이지만, 이 한 줄이 "중복 채팅방" 문제를 원천 차단했다. 작은 결정이 큰 버그를 예방하는 경험이었다.

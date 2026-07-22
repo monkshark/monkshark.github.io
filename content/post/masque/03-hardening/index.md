@@ -41,25 +41,25 @@ Function.prototype.toString = function () {
 
 페이지가 직접 `navigator`를 안 읽고, 동적으로 만든 `about:blank` iframe의 `contentWindow.navigator`를 읽으면 그 프레임은 우리 손이 안 닿은 진짜 값을 준다. 그래서 `contentWindow`·`contentDocument` 접근자를 후킹해, 자식 프레임에 접근하는 순간 거기에도 위장을 다시 입혔다.
 
-Web Worker는 더 까다로웠다. 워커는 자기만의 realm이라 MAIN world 주입이 안 닿는다. `new Worker(url)`을 가로채, 위장 프리루드를 앞에 붙인 블롭으로 감싸 원본을 `importScripts`하게 했다. navigator·타임존·WebGL·OffscreenCanvas까지 워커 안에서도 같은 페르소나로 맞췄다. 단 이건 동일 출처·CORS 워커에서만 된다 — 이 한계는 뒤에서 다시 나온다.
+Web Worker는 더 까다로웠다. 워커는 자기만의 realm이라 MAIN world 주입이 안 닿는다. `new Worker(url)`을 가로채, 위장 프리루드를 앞에 붙인 블롭으로 감싸 원본을 `importScripts`하게 했다. navigator·타임존·WebGL·OffscreenCanvas까지 워커 안에서도 같은 페르소나로 맞췄다. 단 이건 동일 출처·CORS 워커에서만 된다 이 한계는 뒤에서 다시 나온다.
 
 ## 표면은 끝이 없다
 
 하나를 막으면 다음이 보였다. 그리고 앞서 본 대로, 막다 만 표면은 새로운 모순을 만든다.
 
-타임존이 그랬다. `getTimezoneOffset`과 `Intl`은 뉴욕으로 바꿔놨는데 `new Date().toString()`은 여전히 "Korean Standard Time"을 흘리고 있었다. 우리가 직접 모순을 만든 것이다. 그래서 `Date.prototype`의 `toString`·`toLocaleString` 계열까지 페르소나 타임존 기준으로 다시 짰다(서머타임은 `Intl`로 계산). 그 외에도 canvas·audio·OffscreenCanvas·AnalyserNode 파블링, plugins·mimeTypes, mediaDevices, connection, speechSynthesis 음성 목록, storage quota, keyboard 레이아웃, WebGPU 어댑터, 배터리, WebGL 확장 목록까지 — 표면별 토글로 하나씩 덮어 나갔다.
+타임존이 그랬다. `getTimezoneOffset`과 `Intl`은 뉴욕으로 바꿔놨는데 `new Date().toString()`은 여전히 "Korean Standard Time"을 흘리고 있었다. 우리가 직접 모순을 만든 것이다. 그래서 `Date.prototype`의 `toString`·`toLocaleString` 계열까지 페르소나 타임존 기준으로 다시 짰다(서머타임은 `Intl`로 계산). 그 외에도 canvas·audio·OffscreenCanvas·AnalyserNode 파블링, plugins·mimeTypes, mediaDevices, connection, speechSynthesis 음성 목록, storage quota, keyboard 레이아웃, WebGPU 어댑터, 배터리, WebGL 확장 목록까지 표면별 토글로 하나씩 덮어 나갔다.
 
 ## 폰트는 목록을 못 바꾼다, 측정값만 흔든다
 
 폰트는 엔트로피가 큰데 위험했다. 설치된 폰트 목록을 위조하면 그 폰트에 의존하는 사이트가 깨진다. 그래서 Brave식으로, 목록과 렌더링은 그대로 두고 폰트 탐지에 쓰이는 측정 API만 흔들었다.
 
-`getBoundingClientRect`와 `measureText`의 반환값에, 측정값과 출처를 키로 한 sub-pixel 노이즈를 더했다. 같은 페이지에선 같은 값이 나와 레이아웃이 흔들리거나 재측정으로 들키지 않고, 사이트가 바뀌면 노이즈가 달라져 정밀 측정 벡터로 추적당하는 걸 끊는다. 정수인 `offsetWidth`는 일부러 안 건드렸다 — 레이아웃을 깨니까. 대신 솔직히 적었다. 이 방식은 정밀 벡터는 깨지만 "그 폰트가 설치돼 있나"라는 불리언까지 완전히 가리진 못한다.
+`getBoundingClientRect`와 `measureText`의 반환값에, 측정값과 출처를 키로 한 sub-pixel 노이즈를 더했다. 같은 페이지에선 같은 값이 나와 레이아웃이 흔들리거나 재측정으로 들키지 않고, 사이트가 바뀌면 노이즈가 달라져 정밀 측정 벡터로 추적당하는 걸 끊는다. 정수인 `offsetWidth`는 일부러 안 건드렸다 레이아웃을 깨니까. 대신 솔직히 적었다. 이 방식은 정밀 벡터는 깨지만 "그 폰트가 설치돼 있나"라는 불리언까지 완전히 가리진 못한다.
 
 ## 확장의 천장
 
 밀고 나가다 보니 확장으로는 절대 못 넘는 벽이 분명해졌다.
 
-교차 출처 Worker는 못 막는다. 깔끔히 하려면 워커 스크립트의 응답 본문을 고쳐 프리루드를 끼워야 하는데, MV3의 declarativeNetRequest는 응답 본문 수정을 지원하지 않는다. 완전한 탐지 회피도 원리상 불가능하다 — 같은 realm에서 JS로 JS를 속이는 한 잔흔이 남는다. IP·네트워크는 아예 손이 안 닿고, "거대한 동일 사용자 군중"도 못 만든다.
+교차 출처 Worker는 못 막는다. 깔끔히 하려면 워커 스크립트의 응답 본문을 고쳐 프리루드를 끼워야 하는데, MV3의 declarativeNetRequest는 응답 본문 수정을 지원하지 않는다. 완전한 탐지 회피도 원리상 불가능하다 같은 realm에서 JS로 JS를 속이는 한 잔흔이 남는다. IP·네트워크는 아예 손이 안 닿고, "거대한 동일 사용자 군중"도 못 만든다.
 
 이건 전부 엔진 레벨의 영역이다. Brave는 Chromium을 포크해 C++에서 farbling을 구현하고, Tor는 엔진에 탐지 회피를 넣고 그 위에 Tor 네트워크와 수백만 동일 사용자를 얹는다. 확장은 같은 realm 안의 차선책일 수밖에 없다. 그래서 README에도 "더 강한 게 필요하면 Mullvad나 Tor를 써라"라고 적어 뒀다.
 
@@ -71,4 +71,4 @@ Web Worker는 더 까다로웠다. 워커는 자기만의 realm이라 MAIN world
 
 ## 돌아보면
 
-3부 내내 한 일은 결국 두 가지였다. 표면을 하나씩 더 덮고, 덮었다는 흔적을 지우는 것. 그러다 만난 천장은 코드를 더 잘 짜서 넘는 게 아니라, 레이어 자체를 바꿔야(엔진을 포크하거나 Tor를 쓰거나) 넘는 거였다. 확장으로 할 수 있는 건 거의 다 했다는 결론과, 그게 어디까지인지를 정직하게 적어두는 것 — 처음에 정한 best-effort라는 약속을 마지막까지 지킨 셈이다.
+3부 내내 한 일은 결국 두 가지였다. 표면을 하나씩 더 덮고, 덮었다는 흔적을 지우는 것. 그러다 만난 천장은 코드를 더 잘 짜서 넘는 게 아니라, 레이어 자체를 바꿔야(엔진을 포크하거나 Tor를 쓰거나) 넘는 거였다. 확장으로 할 수 있는 건 거의 다 했다는 결론과, 그게 어디까지인지를 정직하게 적어두는 것 처음에 정한 best-effort라는 약속을 마지막까지 지킨 셈이다.

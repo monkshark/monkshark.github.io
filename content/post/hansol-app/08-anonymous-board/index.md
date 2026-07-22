@@ -147,9 +147,9 @@ Future<void> toggleLike(String postId, String uid, {
 }
 ```
 
-`likes.$uid` — Firestore의 dot notation으로 Map의 특정 키만 업데이트한다. `FieldValue.increment(-1)`로 카운터를 원자적으로 감소시킨다. 좋아요를 누르면서 동시에 싫어요를 취소하는 것도 한 번의 업데이트로 처리한다.
+`likes.$uid` Firestore의 dot notation으로 Map의 특정 키만 업데이트한다. `FieldValue.increment(-1)`로 카운터를 원자적으로 감소시킨다. 좋아요를 누르면서 동시에 싫어요를 취소하는 것도 한 번의 업데이트로 처리한다.
 
-`likeCount`는 비정규화된 필드다. `likes` Map의 크기와 항상 같아야 한다. 이걸 별도로 유지하는 이유는 오직 **정렬** 때문이다. "인기글" 탭에서 `likeCount` 내림차순으로 정렬하려면 이 필드가 필요하다.
+`likeCount`는 비정규화된 필드다. `likes` Map의 크기와 항상 같아야 한다. 이걸 별도로 유지하는 이유는 오직 정렬 때문이다. "인기글" 탭에서 `likeCount` 내림차순으로 정렬하려면 이 필드가 필요하다.
 
 ## 검색: Firestore에서 "급식"을 찾으려면
 
@@ -213,11 +213,11 @@ FCM 토픽은 카테고리별 알림 구독을 위해 영어 키로 매핑한다
 
 ## 추가 기능들
 
-- **북마크**: `bookmarkedBy` 배열에 uid를 넣어서 내가 북마크한 글을 모아볼 수 있다
-- **고정글**: `isPinned`과 `pinnedAt`으로 관리자가 글을 상단 고정
-- **투표**: `pollOptions`와 `pollVoters`로 글 안에서 투표 가능. `pollVoters`는 `{uid: optionIndex}` Map
-- **이미지**: `imageUrls` 배열로 다중 이미지 첨부. Firebase Storage에 업로드 후 URL 저장
-- **해결됨**: 질문 카테고리에서 `isResolved`로 해결된 질문 표시
+- 북마크: `bookmarkedBy` 배열에 uid를 넣어서 내가 북마크한 글을 모아볼 수 있다
+- 고정글: `isPinned`과 `pinnedAt`으로 관리자가 글을 상단 고정
+- 투표: `pollOptions`와 `pollVoters`로 글 안에서 투표 가능. `pollVoters`는 `{uid: optionIndex}` Map
+- 이미지: `imageUrls` 배열로 다중 이미지 첨부. Firebase Storage에 업로드 후 URL 저장
+- 해결됨: 질문 카테고리에서 `isResolved`로 해결된 질문 표시
 
 ## 돌아보면
 

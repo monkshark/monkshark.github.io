@@ -51,11 +51,11 @@ public static CompletableFuture<String> getMeal(String date, String mealScCode, 
 
 Flutter 첫 커밋(2023-12-07)에서 `GetMealData.dart`를 만들었을 때도 구조는 같았다. Java의 `CompletableFuture`가 Dart의 `Future`로 바뀌었을 뿐, URL을 조립하고, HTTP 요청을 보내고, JSON을 파싱해서 문자열을 돌려주는 것은 동일했다.
 
-하지만 Flutter 버전이 커지기 시작한 건 **테스터가 늘면서**다.
+하지만 Flutter 버전이 커지기 시작한 건 테스터가 늘면서다.
 
 ## 문제 1: 매번 네트워크 요청
 
-급식 화면을 열 때마다 NEIS API를 호출했다. 조식, 중식, 석식 — 화면 하나를 열면 API 호출 3번. 날짜를 넘기면 3번 더. 체감상 느렸고, NEIS API가 간헐적으로 느려지는 날에는 화면이 몇 초간 빈 채로 있었다.
+급식 화면을 열 때마다 NEIS API를 호출했다. 조식, 중식, 석식 화면 하나를 열면 API 호출 3번. 날짜를 넘기면 3번 더. 체감상 느렸고, NEIS API가 간헐적으로 느려지는 날에는 화면이 몇 초간 빈 채로 있었다.
 
 ## 해결: SharedPreferences 캐시
 
@@ -72,7 +72,7 @@ static void _saveToCache(SharedPreferences prefs, String key, Meal meal) {
 }
 ```
 
-캐시 키는 `meal_20240415_2` 형태 — 날짜와 끼니(1=조식, 2=중식, 3=석식)의 조합이다. 한 번 불러온 급식 데이터는 로컬에 저장되어 다음에 같은 날짜를 볼 때 네트워크 요청 없이 바로 표시된다.
+캐시 키는 `meal_20240415_2` 형태 날짜와 끼니(1=조식, 2=중식, 3=석식)의 조합이다. 한 번 불러온 급식 데이터는 로컬에 저장되어 다음에 같은 날짜를 볼 때 네트워크 요청 없이 바로 표시된다.
 
 이것만으로도 체감 속도가 크게 좋아졌다. 하지만 문제가 하나 더 있었다.
 
@@ -82,7 +82,7 @@ static void _saveToCache(SharedPreferences prefs, String key, Meal meal) {
 
 ## 해결: 월 단위 프리페치
 
-NEIS API는 `MLSV_FROM_YMD`와 `MLSV_TO_YMD` 파라미터로 **기간 조회**를 지원한다. 한 번의 요청으로 한 달 치 급식 데이터를 전부 가져올 수 있다.
+NEIS API는 `MLSV_FROM_YMD`와 `MLSV_TO_YMD` 파라미터로 기간 조회를 지원한다. 한 번의 요청으로 한 달 치 급식 데이터를 전부 가져올 수 있다.
 
 ```dart
 static Future<void> _prefetchMonth(DateTime date) async {
@@ -141,7 +141,7 @@ static Future<void> prefetchWeek(DateTime baseDate) async {
 
 ## 해결: SWR 패턴
 
-SWR(Stale-While-Revalidate)은 웹 개발에서 온 패턴이다. **오래된 캐시를 일단 보여주고, 백그라운드에서 새 데이터를 가져온다.** 사용자는 즉시 데이터를 보고, 데이터가 바뀌었으면 자동으로 갱신된다.
+SWR(Stale-While-Revalidate)은 웹 개발에서 온 패턴이다. 오래된 캐시를 일단 보여주고, 백그라운드에서 새 데이터를 가져온다. 사용자는 즉시 데이터를 보고, 데이터가 바뀌었으면 자동으로 갱신된다.
 
 ```dart
 static Future<Meal?> getMeal({...}) async {
@@ -161,7 +161,7 @@ static Future<Meal?> getMeal({...}) async {
 }
 ```
 
-핵심은 `_prefetchMonth(date)`를 `await` **하지 않는 것**이다. 캐시가 stale이면 일단 오래된 데이터를 반환하고, 프리페치는 백그라운드에서 돌린다. 다음에 화면을 열면 갱신된 데이터가 표시된다.
+핵심은 `_prefetchMonth(date)`를 `await` 하지 않는 것이다. 캐시가 stale이면 일단 오래된 데이터를 반환하고, 프리페치는 백그라운드에서 돌린다. 다음에 화면을 열면 갱신된 데이터가 표시된다.
 
 캐시 만료 정책도 계층적이다:
 
@@ -178,8 +178,8 @@ static Meal? _getFromCache(SharedPreferences prefs, String key) {
 }
 ```
 
-- **"데이터 없음" 응답**: 5분만 캐시한다. 학교에서 아직 급식을 등록 안 했을 수 있으니 곧 다시 시도
-- **정상 데이터**: 24시간까지 fresh, 24시간~3일은 stale(SWR 대상), 3일 이후는 완전 삭제
+- "데이터 없음" 응답: 5분만 캐시한다. 학교에서 아직 급식을 등록 안 했을 수 있으니 곧 다시 시도
+- 정상 데이터: 24시간까지 fresh, 24시간~3일은 stale(SWR 대상), 3일 이후는 완전 삭제
 
 ## 오프라인 대응
 
@@ -230,4 +230,4 @@ class Meal {
 
 ## 다음 글에서는
 
-앱의 커뮤니티 기능을 뒷받침하는 Firestore 스키마 설계 — 게시판, 채팅, 사용자 관리까지의 구조와 초기 실수들을 다룬다.
+앱의 커뮤니티 기능을 뒷받침하는 Firestore 스키마 설계 게시판, 채팅, 사용자 관리까지의 구조와 초기 실수들을 다룬다.

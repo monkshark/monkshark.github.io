@@ -17,12 +17,12 @@ tags: ["PAGE", "Kotlin", "Compose Desktop", "Canvas", "IME", "한글 입력", "U
 
 그 구조가 하나둘씩 깨지기 시작했다.
 
-- 두 시간선 — 윈도우 레벨에서 Ctrl+Z 를 가로채 우리 `EditHistory` 로 처리하고 있는데, `BasicTextField` 안에도 자체 Undo 스택이 살아 있었다. 우리 인터셉터가 한 번이라도 새는 순간 `BasicTextField` 의 스택이 발사된다. `#4` 에서 제거한 줄 알았던 두 시간선이 사실은 한 겹 더 깊은 곳에 있었다.
-- 한글이 두 번 찍힌다 — IME 조합 중 텍스트가 컴포지션 영역 안에 있는 동안에는 텍스트값과 시각 표현 사이가 어긋난다. `BasicTextField` 는 자체적으로 컴포지션을 처리하지만, `VisualTransformation` 을 끼우면 그 처리와 충돌해 같은 글자가 두 번 들어가거나 마지막 글자가 통째로 사라졌다.
-- 드래그-드롭 같은 기능을 못 만든다 — 선택 영역을 다른 위치로 끌어 옮기려면 프레스 시점에 캐럿을 옮기지 않고 보류 하는 결정이 필요하다. `BasicTextField` 의 포인터 처리 안쪽엔 그 결정 지점이 없다.
-- 신택스 색이 컴포지션과 싸운다 — 토큰별 색깔을 `VisualTransformation` 으로 입혔더니 IME 조합 중 색이 흔들리고, 폴딩 플레이스홀더 (`...`) 와 캐럿 좌표가 서로 1글자씩 어긋나는 모서리가 생겼다.
+- 두 시간선 윈도우 레벨에서 Ctrl+Z 를 가로채 우리 `EditHistory` 로 처리하고 있는데, `BasicTextField` 안에도 자체 Undo 스택이 살아 있었다. 우리 인터셉터가 한 번이라도 새는 순간 `BasicTextField` 의 스택이 발사된다. `#4` 에서 제거한 줄 알았던 두 시간선이 사실은 한 겹 더 깊은 곳에 있었다.
+- 한글이 두 번 찍힌다 IME 조합 중 텍스트가 컴포지션 영역 안에 있는 동안에는 텍스트값과 시각 표현 사이가 어긋난다. `BasicTextField` 는 자체적으로 컴포지션을 처리하지만, `VisualTransformation` 을 끼우면 그 처리와 충돌해 같은 글자가 두 번 들어가거나 마지막 글자가 통째로 사라졌다.
+- 드래그-드롭 같은 기능을 못 만든다 선택 영역을 다른 위치로 끌어 옮기려면 프레스 시점에 캐럿을 옮기지 않고 보류 하는 결정이 필요하다. `BasicTextField` 의 포인터 처리 안쪽엔 그 결정 지점이 없다.
+- 신택스 색이 컴포지션과 싸운다 토큰별 색깔을 `VisualTransformation` 으로 입혔더니 IME 조합 중 색이 흔들리고, 폴딩 플레이스홀더 (`...`) 와 캐럿 좌표가 서로 1글자씩 어긋나는 모서리가 생겼다.
 
-기존 도구의 한계를 한 번에 다 풀고 싶었다. 내가 통제해야 하는 상태는 라이브러리에 맡기지 않는다 — `#4` 회고에 적은 그 한 줄을 한 단계 더 밀어붙이는 일이었다.
+기존 도구의 한계를 한 번에 다 풀고 싶었다. 내가 통제해야 하는 상태는 라이브러리에 맡기지 않는다 `#4` 회고에 적은 그 한 줄을 한 단계 더 밀어붙이는 일이었다.
 
 ## 첫 캔버스: 글자가 그려지는 순간
 
@@ -44,7 +44,7 @@ Canvas(modifier = ...) {
 }
 ```
 
-처음 캐럿이 깜빡이는 것을 본 순간을 기억한다. `BasicTextField` 에서는 너무 당연해서 안 보이던 것이었다 — 캐럿이 깜빡이는 일조차 우리가 직접 타이머로 토글해야 한다.
+처음 캐럿이 깜빡이는 것을 본 순간을 기억한다. `BasicTextField` 에서는 너무 당연해서 안 보이던 것이었다 캐럿이 깜빡이는 일조차 우리가 직접 타이머로 토글해야 한다.
 
 ```kotlin
 LaunchedEffect(isFocused, value.selection) {
@@ -64,7 +64,7 @@ LaunchedEffect(isFocused, value.selection) {
 fun CodeEditor(text: String, caret: Int, onChange: (String, Int) -> Unit, ...)
 ```
 
-이 모양으로는 PAGE 의 나머지 코드와 맞지 않았다. 검색 하이라이트, 신택스 토큰, 브래킷 매칭, 폴딩 — 전부 `VisualTransformation` 으로 텍스트에 색/배경/플레이스홀더를 입히는 구조였고, 그러려면 `BasicTextField` 가 받던 시그니처와 동일한 모양으로 받아야 했다.
+이 모양으로는 PAGE 의 나머지 코드와 맞지 않았다. 검색 하이라이트, 신택스 토큰, 브래킷 매칭, 폴딩 전부 `VisualTransformation` 으로 텍스트에 색/배경/플레이스홀더를 입히는 구조였고, 그러려면 `BasicTextField` 가 받던 시그니처와 동일한 모양으로 받아야 했다.
 
 ```kotlin
 fun CodeEditor(
@@ -83,8 +83,8 @@ fun CodeEditor(
 
 처음 시도했을 때의 증상이 두 개였다.
 
-- 같은 글자가 두 번 들어간다 — 조합 중 글자를 우리가 한 번 그리고, 컴포지션 confirm 시 AWT 의 `InputMethodEvent` 가 또 한 번 텍스트로 넣는다.
-- 마지막 글자가 사라진다 — 거꾸로, 컴포지션 텍스트가 우리 `value.text` 에 들어갔는데 confirm 이 안 와서 그대로 묶였다가 다음 입력 때 통째로 날아간다.
+- 같은 글자가 두 번 들어간다 조합 중 글자를 우리가 한 번 그리고, 컴포지션 confirm 시 AWT 의 `InputMethodEvent` 가 또 한 번 텍스트로 넣는다.
+- 마지막 글자가 사라진다 거꾸로, 컴포지션 텍스트가 우리 `value.text` 에 들어갔는데 confirm 이 안 와서 그대로 묶였다가 다음 입력 때 통째로 날아간다.
 
 해법은 두 갈래였다. 컴포지션 중 텍스트는 `value.text` 에 넣지 않고, `value.composition` 범위 안에서만 시각화.
 
@@ -103,7 +103,7 @@ if (composition != null && !composition.collapsed) {
 }
 ```
 
-조합 중인 글자는 캐럿 아래에 1px underline 으로 표시한다 — IntelliJ, VSCode 모두 같은 시각 패턴이다.
+조합 중인 글자는 캐럿 아래에 1px underline 으로 표시한다 IntelliJ, VSCode 모두 같은 시각 패턴이다.
 
 다른 한 갈래는 caret rect 를 IME 에 다시 알려주는 것. 한글 후보창은 캐럿 위치에 떠야 하는데, 그 위치를 IME 에게 알리는 경로가 따로 있다. AWT 의 `InputMethodRequests.getTextLocation()` 으로 caret rect 의 화면 좌표를 돌려주는 어댑터를 끼웠다. 빠뜨리면 후보창이 화면 좌측 상단 (0, 0) 에 뜬다.
 
@@ -122,15 +122,15 @@ val caretRectProvider: () -> androidx.compose.ui.geometry.Rect = {
 
 가장 길었던 PR. 코드 에디터로서 당연히 있어야 하는 것들이 한꺼번에 비어 있었기 때문이다.
 
-- 좌/우 화살표, Home/End — `TextLayoutResult` 의 `getLineStart` / `getLineEnd` 사용
-- Ctrl+화살표로 단어 점프 — `WordBoundary` 모듈 (이미 다른 PR 에서 만들어둠) 재사용
+- 좌/우 화살표, Home/End `TextLayoutResult` 의 `getLineStart` / `getLineEnd` 사용
+- Ctrl+화살표로 단어 점프 `WordBoundary` 모듈 (이미 다른 PR 에서 만들어둠) 재사용
 - Ctrl+Backspace / Ctrl+Delete 단어 삭제, 일반 Backspace / Delete
 - Enter 자동 들여쓰기 (`Indent.handleEnter`), Tab/Shift+Tab 들여쓰기
 - Alt+Up/Down 줄 이동, Alt+Shift+Up/Down 줄 복제
-- 클립보드 — Ctrl+C / X / V / A
-- 마우스 단일/더블/트리플 클릭 — 캐럿 / 단어 / 줄 선택
+- 클립보드 Ctrl+C / X / V / A
+- 마우스 단일/더블/트리플 클릭 캐럿 / 단어 / 줄 선택
 - 드래그로 선택 확장
-- 자체 Undo 스택 (이 시점에는 켜진 상태로 들어감 — 나중에 옵트아웃 됨)
+- 자체 Undo 스택 (이 시점에는 켜진 상태로 들어감 나중에 옵트아웃 됨)
 
 전부 순수 로직은 모듈로 분리 한다는 규칙으로 짰다. `CodeEditorActions` 가 `TextFieldValue` → `TextFieldValue` 변환만 책임지고, `CodeEditor` 안의 키 핸들러는 디스패치만. 그렇게 하니 단위 테스트가 거의 다 `page/ui` 모듈에 들어갔고, Compose 런타임 없이 바로 돌릴 수 있었다.
 
@@ -172,7 +172,7 @@ LaunchedEffect(value.selection.end, layout) {
 
 우클릭 / Shift+클릭. Compose 의 `DropdownMenu` 를 마우스 좌표에서 띄우고, 잘라내기/복사/붙여넣기/전체선택을 4개 메뉴로 묶었다. Shift+클릭은 기존 selection 의 anchor 를 유지한 채 클릭 위치를 새 endpoint 로 잡는 단순한 처리.
 
-이 시점에 PAGE 는 외관상 마이그레이션이 끝난 것처럼 보였다. 검색 하이라이트, 신택스, 브래킷, 폴딩, 한글 입력, 마우스, 키보드 — 다 정상이었다. 하지만 외관상 끝난 것과 실제로 끝난 것은 달랐다.
+이 시점에 PAGE 는 외관상 마이그레이션이 끝난 것처럼 보였다. 검색 하이라이트, 신택스, 브래킷, 폴딩, 한글 입력, 마우스, 키보드 다 정상이었다. 하지만 외관상 끝난 것과 실제로 끝난 것은 달랐다.
 
 ## 두 시간선이 또
 
@@ -213,7 +213,7 @@ fun CodeEditor(
 VSCode / IntelliJ 식의 하이브리드 그룹화 로 갔다. 같은 종류의 연속 입력은 하나의 그룹으로 묶고, 다음 조건들 중 하나에 걸리면 새 그룹을 시작한다 (= "break").
 
 - 첫 변경
-- 종류가 바뀜 — Insert ↔ Delete ↔ Replace
+- 종류가 바뀜 Insert ↔ Delete ↔ Replace
 - 직전 변경이 break-char (whitespace, 구두점) 로 끝남
 - 마지막 변경 후 500ms 이상 지남
 - 큰 작업 (붙여넣기, 선택 영역 교체 등) 직후
@@ -254,7 +254,7 @@ class UndoGroupTracker(
 
 `computeDelta` 는 `prevText` 와 `newText` 의 공통 prefix / suffix 를 잘라 가운데 변경 영역만 본다. 그 변경이 Insert 인지 Delete 인지 Replace 인지, 끝 글자가 break-char 인지, 변경 길이가 임계 (8 글자) 이상인지를 한 번에 계산한다.
 
-`nowProvider` 를 주입할 수 있게 한 게 테스트에 결정적이었다. 14개 테스트가 전부 `Clock(now)` 를 직접 조작하면서 break 가 일어나는지를 검증한다 — 실시간 의존 없이.
+`nowProvider` 를 주입할 수 있게 한 게 테스트에 결정적이었다. 14개 테스트가 전부 `Clock(now)` 를 직접 조작하면서 break 가 일어나는지를 검증한다 실시간 의존 없이.
 
 ```kotlin
 @Test fun continuousBackspaceMergesThroughWhitespaceUntilNextWord() {
@@ -275,7 +275,7 @@ class UndoGroupTracker(
 
 남은 결함 두 개를 같이 묶었다.
 
-Up/Down 의 컬럼 유실. 긴 줄에서 Down 을 누르면 짧은 줄에 가서 X 좌표가 잘려 들어간다. 거기서 Down 을 또 누르면 그 잘린 X 가 새 기준이 되어, 다시 긴 줄로 돌아와도 원래 컬럼으로 못 돌아간다. 모든 IDE 가 이 문제를 preferred X — 직전 vertical move 의 X 를 기억하는 — 로 푼다.
+Up/Down 의 컬럼 유실. 긴 줄에서 Down 을 누르면 짧은 줄에 가서 X 좌표가 잘려 들어간다. 거기서 Down 을 또 누르면 그 잘린 X 가 새 기준이 되어, 다시 긴 줄로 돌아와도 원래 컬럼으로 못 돌아간다. 모든 IDE 가 이 문제를 preferred X 직전 vertical move 의 X 를 기억하는 로 푼다.
 
 ```kotlin
 val preferredX = remember { mutableStateOf<Float?>(null) }
@@ -288,7 +288,7 @@ val isVerticalMove = !ctrl && !alt && (
 if (!isVerticalMove) preferredX.value = null
 ```
 
-Up/Down 이 들어오면 `preferredX.value` 가 비어 있으면 현재 캐럿의 X 로 채우고, 비어 있지 않으면 그 값을 그대로 쓴다. 화살표 좌/우, Home/End, 타이핑, 마우스 클릭 — 어느 것이든 새 입력이 들어오면 reset. 같은 처리를 PointerEventType.Press 에서도 한다.
+Up/Down 이 들어오면 `preferredX.value` 가 비어 있으면 현재 캐럿의 X 로 채우고, 비어 있지 않으면 그 값을 그대로 쓴다. 화살표 좌/우, Home/End, 타이핑, 마우스 클릭 어느 것이든 새 입력이 들어오면 reset. 같은 처리를 PointerEventType.Press 에서도 한다.
 
 PageUp/Down 의 하드코드 10줄. 기존 코드는 `targetLine = currentLine ± 10` 이었다. 화면이 100줄 보여도 10줄만 가고, 5줄만 보여도 10줄을 갔다. 한 페이지 의 의미가 빠져 있었다.
 
@@ -306,7 +306,7 @@ object PageScroll {
 }
 ```
 
-`-1` 은 컨텍스트 한 줄을 남긴다 — 페이지를 넘어도 직전 화면의 마지막 줄이 위/아래 한 줄로 보인다. VSCode 의 `editor.scrollPageSize` 동작과 같다.
+`-1` 은 컨텍스트 한 줄을 남긴다 페이지를 넘어도 직전 화면의 마지막 줄이 위/아래 한 줄로 보인다. VSCode 의 `editor.scrollPageSize` 동작과 같다.
 
 `viewportPx` 는 `ScrollState.viewportSize` 에서 받아온다. CodeEditor 는 그 값을 모르는 게 맞으므로 `viewportHeightProvider: () -> Float` 콜백으로 주입받게 했다.
 
@@ -318,7 +318,7 @@ CodeEditor(
 )
 ```
 
-테스트 5개 — fallback / 표준 viewport / 작은 viewport / custom fallback / 분수 viewport — 모두 `PageScroll.linesPerPage` 단위 테스트. Compose 런타임 없이 돌아간다.
+테스트 5개 fallback / 표준 viewport / 작은 viewport / custom fallback / 분수 viewport 모두 `PageScroll.linesPerPage` 단위 테스트. Compose 런타임 없이 돌아간다.
 
 ## 선택을 들어 옮기기
 
@@ -371,18 +371,18 @@ fun applyDragMove(value: TextFieldValue, dropOffset: Int, copy: Boolean): TextFi
 
 ## 돌아보면
 
-다 짜고 보니 Canvas 자체는 의외로 작은 부분이었다. `drawText` 와 `getCursorRect`, 클릭 좌표를 offset 으로 바꾸는 한 줄 — 그게 거의 전부다. 진짜 일은 라이브러리가 알아서 해주던 것을 알아서 해주지 않게 만들고, 그 대신 우리가 명시적으로 통제하는 것이었다.
+다 짜고 보니 Canvas 자체는 의외로 작은 부분이었다. `drawText` 와 `getCursorRect`, 클릭 좌표를 offset 으로 바꾸는 한 줄 그게 거의 전부다. 진짜 일은 라이브러리가 알아서 해주던 것을 알아서 해주지 않게 만들고, 그 대신 우리가 명시적으로 통제하는 것이었다.
 
 그 통제권 안에서 두 가지가 가장 힘들었다.
 
 한글 IME. 텍스트 모델과 시각 표현이 다르게 살아 있는 시간 (조합 중) 의 처리는 Compose 의 추상이 막아두던 영역이었다. 한 번 직접 다뤄 보고 나서야 IntelliJ 가 왜 자체 입력 처리 레이어를 갖고 있는지 이해됐다.
 
-Undo 의 두 시간선. 이전 글에서 한 번 풀고, 마이그레이션 도중에 또 한 번 풀고, 그룹화 단계에서 한 번 더 풀었다. 같은 패턴 — 우리가 통제하는 시간선 옆에 라이브러리가 대기 중인 두 번째 시간선이 있었다. 매번 다른 모양 으로 등장했지만 본질은 같은 한 가지였다. 세 번째 만났을 때는 첫 두 번보다 빨리 알아챘다. 비슷한 패턴이 또 나타나면 더 빠르게 잡을 자신이 생겼다.
+Undo 의 두 시간선. 이전 글에서 한 번 풀고, 마이그레이션 도중에 또 한 번 풀고, 그룹화 단계에서 한 번 더 풀었다. 같은 패턴 우리가 통제하는 시간선 옆에 라이브러리가 대기 중인 두 번째 시간선이 있었다. 매번 다른 모양 으로 등장했지만 본질은 같은 한 가지였다. 세 번째 만났을 때는 첫 두 번보다 빨리 알아챘다. 비슷한 패턴이 또 나타나면 더 빠르게 잡을 자신이 생겼다.
 
 배운 것 셋.
 
 - 순수 로직은 모듈로 떼고 Compose 런타임 없이 테스트 가능하게 짜라. 마지막 단계에서 작은 함수 하나 추가하고 8개 테스트로 검증할 수 있던 건 일찍 그 분리를 해 둔 덕이었다.
-- 내가 만든 컴포저블도 옵트아웃 가능하게 짜라. `manageHistory: Boolean = true` — 외부가 통제하면 내부는 비활성. `BasicTextField` 가 막아두던 자리에 들어선 새 컴포저블도, 같은 자리에 또 다른 사용자를 끼울 수 있어야 한다.
-- 시각 효과의 alpha 한 줄로 UX 가 달라진다. 드래그 중 ghost caret 의 alpha 0.55 — 이 한 줄이 없었으면 사용자가 어디에 떨어뜨리는지 모르는 채 떼게 된다. 작은 시각적 정직함.
+- 내가 만든 컴포저블도 옵트아웃 가능하게 짜라. `manageHistory: Boolean = true` 외부가 통제하면 내부는 비활성. `BasicTextField` 가 막아두던 자리에 들어선 새 컴포저블도, 같은 자리에 또 다른 사용자를 끼울 수 있어야 한다.
+- 시각 효과의 alpha 한 줄로 UX 가 달라진다. 드래그 중 ghost caret 의 alpha 0.55 이 한 줄이 없었으면 사용자가 어디에 떨어뜨리는지 모르는 채 떼게 된다. 작은 시각적 정직함.
 
 다음 글은 더 위쪽으로 올라간다. 코드 에디터를 다시 짠 김에 그 위에 Quick Open 과 Find in Files 를 얹는다. PAGE 가 처음으로 프로젝트 단위 도구 로 보이기 시작하는 자리다.

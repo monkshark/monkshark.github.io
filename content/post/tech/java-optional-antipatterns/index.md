@@ -22,7 +22,7 @@ public class User {
 }
 ```
 
-`Optional`은 직렬화 보장이 없고, 객체 한 단계가 더 끼므로 메모리 오버헤드도 있다. 무엇보다 의도가 흐려진다 — 필드가 비어있을 수 있다는 사실은 도메인 모델 차원에서 명시할 일이지 타입 래퍼로 표현할 일이 아니다.
+`Optional`은 직렬화 보장이 없고, 객체 한 단계가 더 끼므로 메모리 오버헤드도 있다. 무엇보다 의도가 흐려진다 필드가 비어있을 수 있다는 사실은 도메인 모델 차원에서 명시할 일이지 타입 래퍼로 표현할 일이 아니다.
 
 ```java
 public class User {
@@ -66,7 +66,7 @@ String name = optional.orElse(fetchDefaultFromDb());   // ❌
 
 `orElse`의 인자는 Optional이 비어있든 아니든 무조건 평가된다. Optional에 값이 들어있어도 `fetchDefaultFromDb()`는 매번 실행된다. 평소에 거의 쓸모없는 호출이 매번 일어나는 셈이다.
 
-게으른 평가가 필요하면 `orElseGet` — `Supplier`를 받아 비어있을 때만 호출한다.
+게으른 평가가 필요하면 `orElseGet` `Supplier`를 받아 비어있을 때만 호출한다.
 
 ```java
 String name = optional.orElseGet(() -> fetchDefaultFromDb());

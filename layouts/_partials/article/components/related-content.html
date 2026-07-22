@@ -1,0 +1,15 @@
+{{ $related := (.Site.RegularPages.Related .) | first 4 }}
+{{ with $related }}
+<aside class="related-posts">
+    <h2 class="related-posts__title">{{ T "article.relatedContent" }}</h2>
+    <div class="related-posts__grid">
+        {{ range . }}
+        <a class="related-posts__card" href="{{ .RelPermalink }}">
+            {{ with .Params.categories }}<span class="related-posts__cat">{{ index . 0 }}</span>{{ end }}
+            <span class="related-posts__ttl">{{ .Title }}</span>
+            <span class="related-posts__date">{{ .Date.Format "2006.01.02" }}</span>
+        </a>
+        {{ end }}
+    </div>
+</aside>
+{{ end }}
