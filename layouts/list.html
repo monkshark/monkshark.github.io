@@ -31,37 +31,45 @@
         </div>
     </header>
 
-    {{- $pages := partial "helper/pages.html" . -}}
-    {{- $subsections := .Sections -}}
-
-    {{- if and (eq (len $pages) (len $subsections)) (eq $pages $subsections) -}}
-        {{- $subsections = slice -}}
-    {{- end -}}
-
-    {{- with $subsections -}}
-        <aside>
-            <h2 class="section-title">{{ T "list.subsection" (len $subsections) }}</h2>
-            <div class="subsection-list">
-                <div class="article-list--tile">
-                    {{ range . }}
-                        {{ partial "article-list/tile" . }}
-                    {{ end }}
-                </div>
-            </div>
-        </aside>
-    {{- end -}}
-
-    {{/* List only pages that are not a subsection */}}
-    {{ $paginator := partial "helper/paginator.html" . }}
-    {{ with $paginator }}
-        <section class="article-list--compact">
+    {{ if eq .Kind "taxonomy" }}
+        <div class="cat-grid">
             {{ range .Pages }}
-                {{ partial "article-list/compact" . }}
+                {{ partial "article-list/tile" . }}
             {{ end }}
-        </section>
-    {{ end }}
+        </div>
+    {{ else }}
+        {{- $pages := partial "helper/pages.html" . -}}
+        {{- $subsections := .Sections -}}
 
-    {{- partial "pagination.html" . -}}
+        {{- if and (eq (len $pages) (len $subsections)) (eq $pages $subsections) -}}
+            {{- $subsections = slice -}}
+        {{- end -}}
+
+        {{- with $subsections -}}
+            <aside>
+                <h2 class="section-title">{{ T "list.subsection" (len $subsections) }}</h2>
+                <div class="subsection-list">
+                    <div class="article-list--tile">
+                        {{ range . }}
+                            {{ partial "article-list/tile" . }}
+                        {{ end }}
+                    </div>
+                </div>
+            </aside>
+        {{- end -}}
+
+        {{/* List only pages that are not a subsection */}}
+        {{ $paginator := partial "helper/paginator.html" . }}
+        {{ with $paginator }}
+            <section class="article-list--compact">
+                {{ range .Pages }}
+                    {{ partial "article-list/compact" . }}
+                {{ end }}
+            </section>
+        {{ end }}
+
+        {{- partial "pagination.html" . -}}
+    {{ end }}
 
     {{ partialCached "footer/footer" . }}
 {{ end }}

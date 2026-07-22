@@ -212,48 +212,122 @@ body.anim-ready .animate-on-scroll.is-visible {
     left: 0;
 }
 
-/* --- 아카이브 카테고리 타일: 이름 왼쪽 + 아이콘 오른쪽 절반 (기존 카드 크기) --- */
-.template-archives .article-list--tile article.has-image a {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: stretch;
-    gap: var(--spacing-sm);
+/* --- 카테고리 타일 그리드 (카테고리 목록 / 아카이브 상단) --- */
+.cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 14px;
 }
 
-.template-archives .article-list--tile article.has-image .article-details {
-    order: 1;
-    position: static;
-    flex: 1 1 50%;
-    height: 100%;
-    background: transparent !important;
+@media (max-width: 640px) {
+    .cat-grid {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
-.template-archives .article-list--tile article.has-image .article-title {
-    color: var(--card-text-color-main);
-}
-
-.template-archives .article-list--tile article.tile-filled .article-title {
-    color: #fff;
-}
-
-.template-archives .article-list--tile article.has-image .article-image {
-    order: 2;
-    position: static;
-    flex: 0 0 50%;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-
-    img {
+.cat-grid {
+    .cat-card {
+        --cat: var(--accent-color);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
         width: 100%;
-        height: 100%;
-        border-radius: 0;
-        object-fit: contain;
-        opacity: 1;
+        height: auto;
+        padding: var(--card-padding);
+        border-radius: 14px;
+        background: var(--card-background);
+        box-shadow: none;
+        border: 1px solid var(--card-separator-color);
+        overflow: hidden;
+        transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.22s ease;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 3px;
+            background: var(--cat);
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+
+        &:hover {
+            transform: translateY(-4px);
+            border-color: var(--cat);
+            box-shadow: var(--shadow-l2);
+
+            &::before {
+                opacity: 1;
+            }
+        }
+
+        > a {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+
+    .cat-card__top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .cat-card__icon {
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+        border-radius: 22%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+    .cat-card__heading {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .cat-card__name {
+        font-size: 16.5px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: var(--card-text-color-main);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cat-card__count {
+        font-family: var(--code-font-family);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--card-text-color-tertiary);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .cat-card__desc {
+        margin: 0;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--card-text-color-secondary);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 }
 
@@ -358,7 +432,7 @@ body.anim-ready .animate-on-scroll.is-visible {
     font-family: var(--code-font-family);
     font-size: 12.5px;
     font-weight: 700;
-    color: var(--card-text-color-tertiary);
+    color: var(--card-text-color-secondary);
     font-variant-numeric: tabular-nums;
 }
 
@@ -606,7 +680,7 @@ body.anim-ready .animate-on-scroll.is-visible {
     font-family: var(--code-font-family);
     font-size: 12.5px;
     font-weight: 700;
-    color: var(--card-text-color-tertiary);
+    color: var(--card-text-color-secondary);
 }
 
 .post-card__date {
