@@ -1,0 +1,7 @@
+{
+    "theme": "dark",
+    "securityLevel": "strict",
+    "look": "classic",
+    "flowchart": { "htmlLabels": true, "useMaxWidth": true },
+    "gantt": { "useWidth": 800 }
+}

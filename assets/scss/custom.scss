@@ -894,3 +894,29 @@ body.anim-ready .animate-on-scroll.is-visible {
         transform: none;
     }
 }
+
+/* --- 빌드타임에 미리 그려진 mermaid SVG: 라이트/다크 토글 --- */
+.mermaid-wrapper .mermaid-static {
+    display: flex;
+    justify-content: center;
+
+    svg {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.mermaid-static__dark {
+    display: none;
+}
+
+:root[data-scheme="dark"] {
+    .mermaid-static__light {
+        display: none;
+    }
+
+    .mermaid-static__dark {
+        display: block;
+    }
+}

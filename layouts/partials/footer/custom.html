@@ -85,9 +85,14 @@
 
     function initSwup() {
         if (typeof Swup === 'undefined') return;
+        var plugins = [];
+        if (typeof SwupScriptsPlugin !== 'undefined') {
+            plugins.push(new SwupScriptsPlugin());
+        }
         var swup = new Swup({
             containers: ['.main-container'],
-            animationSelector: false
+            animationSelector: false,
+            plugins: plugins
         });
         swup.hooks.on('content:replace', function(visit) {
             syncContainerClass(visit);

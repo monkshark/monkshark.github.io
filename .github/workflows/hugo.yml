@@ -35,6 +35,18 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Pre-render mermaid diagrams
+        run: npm run render-mermaid
+
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5

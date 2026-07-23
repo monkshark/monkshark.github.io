@@ -1,0 +1,19 @@
+{{- $idx := .Page.Store.Get "mermaidIdx" | default 0 -}}
+{{- .Page.Store.Set "mermaidIdx" (add $idx 1) -}}
+{{- $relPath := replace .Page.File.Path "\\" "/" -}}
+{{- $pageHash := substr (md5 $relPath) 0 12 -}}
+{{- $key := printf "%s-%d" $pageHash $idx -}}
+{{- $light := resources.Get (printf "mermaid-generated/%s.light.svg" $key) -}}
+{{- $dark := resources.Get (printf "mermaid-generated/%s.dark.svg" $key) -}}
+{{- if and $light $dark -}}
+<div class="mermaid-static">
+    <div class="mermaid-static__light">{{ $light.Content | safeHTML }}</div>
+    <div class="mermaid-static__dark">{{ $dark.Content | safeHTML }}</div>
+</div>
+{{- .Page.Store.Set "hasMermaidStatic" true -}}
+{{- else -}}
+<pre class="mermaid" style="visibility:hidden">
+{{- .Inner | safeHTML -}}
+</pre>
+{{- .Page.Store.Set "hasMermaid" true -}}
+{{- end -}}

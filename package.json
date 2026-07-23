@@ -1,0 +1,11 @@
+{
+    "name": "monkshark-blog-build",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "render-mermaid": "node scripts/render-mermaid.mjs"
+    },
+    "devDependencies": {
+        "@mermaid-js/mermaid-cli": "11.16.0"
+    }
+}
