@@ -2,10 +2,11 @@
     "theme": "default",
     "securityLevel": "strict",
     "look": "classic",
+    "htmlLabels": false,
     "fontFamily": "'Noto Sans KR', 'Noto Sans CJK KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif",
     "themeVariables": {
         "fontFamily": "'Noto Sans KR', 'Noto Sans CJK KR', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif"
     },
-    "flowchart": { "htmlLabels": true, "useMaxWidth": true },
+    "flowchart": { "htmlLabels": false, "useMaxWidth": true },
     "gantt": { "useWidth": 800 }
 }
