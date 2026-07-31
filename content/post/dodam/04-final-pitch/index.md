@@ -5,7 +5,7 @@ date: 2026-07-20T13:00:00+09:00
 slug: dodam-final-pitch
 image:
 categories:
-    - 도담도담 회고록
+    - 정션아시아 1위 후기
 tags:
     - 도담도담
     - 해커톤
